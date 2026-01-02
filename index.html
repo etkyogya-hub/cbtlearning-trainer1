@@ -3,11 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trainer Mode – Unlock</title>
+<title>Trainer Mode — Unlock</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
 
 <style>
+/* ===== RESET ===== */
+*{box-sizing:border-box}
 body{
   margin:0;
   background:#020202;
@@ -18,15 +20,17 @@ body{
   align-items:center;
   height:100vh;
 }
+
+/* ===== FRAME ===== */
 .frame{
   width:360px;
   height:640px;
   padding:22px;
-  box-sizing:border-box;
   position:relative;
+  overflow:hidden;
 }
 
-/* ===== LOCK SCREEN ===== */
+/* ================= LOCK SCREEN ================= */
 .lock{
   position:absolute;
   inset:0;
@@ -35,14 +39,14 @@ body{
   justify-content:center;
 }
 .lock h1{
-  font-family:'Anton';
+  font-family:'Anton', sans-serif;
   font-size:28px;
-  margin-bottom:10px;
+  margin:0 0 8px 0;
 }
 .lock p{
   font-size:14px;
   opacity:.8;
-  margin-bottom:14px;
+  margin:0 0 14px 0;
 }
 .lock input{
   padding:10px;
@@ -67,43 +71,61 @@ body{
   display:none;
 }
 
-/* ===== TRAINER MODE ===== */
-.trainer{
-  display:none;
-}
+/* ================= TRAINER MODE ================= */
+.trainer{display:none}
+
+/* TIMER */
 .timer{
   position:absolute;
   top:14px;
   right:18px;
+  font-size:14px;
   font-weight:800;
   color:#ff3b3b;
-  animation: blink .7s infinite;
+  animation:blink .7s infinite;
 }
-@keyframes blink{50%{opacity:.3}}
+@keyframes blink{
+  0%,50%{opacity:1}
+  51%,100%{opacity:.3}
+}
+
+/* TITLE */
 .title{
-  font-family:'Anton';
+  font-family:'Anton', sans-serif;
   font-size:30px;
+  line-height:1.05;
   margin-bottom:14px;
 }
+
+/* QUESTION */
 .question{
   font-size:15px;
   line-height:1.45;
   margin-bottom:16px;
 }
+
+/* OPTIONS */
 .options div{
   border:1px solid #333;
   padding:10px;
   margin-bottom:8px;
+  font-size:14px;
   opacity:.8;
 }
+
+/* PRESSURE */
 @keyframes shake{
   0%{transform:translateX(0)}
   25%{transform:translateX(-3px)}
   50%{transform:translateX(3px)}
   75%{transform:translateX(-3px)}
+  100%{transform:translateX(0)}
 }
-.pressure{animation:shake .25s infinite}
+.pressure{
+  animation:shake .25s infinite;
+}
 
+/* WRONG */
 .wrong{
   position:absolute;
   inset:0;
@@ -111,76 +133,87 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-family:'Anton';
+  font-family:'Anton', sans-serif;
   font-size:32px;
   color:#ff3b3b;
   opacity:0;
 }
 .wrong.show{opacity:1}
 
+/* CORRECTION */
 .correct{
   position:absolute;
   bottom:18px;
   left:18px;
   right:18px;
+  background:#000;
   border:1px solid #222;
   padding:14px;
   font-size:13px;
+  line-height:1.4;
   opacity:0;
 }
-.correct.show{opacity:1}
+.correct.show{
+  opacity:1;
+  transition:.3s;
+}
 </style>
 </head>
 
 <body>
 <div class="frame">
 
-<!-- 🔒 LOCK -->
+<!-- ============ LOCK ============ -->
 <div class="lock" id="lock">
   <h1>TRAINER MODE</h1>
   <p>
     Ini bukan latihan soal.<br>
     Ini latihan keputusan.
   </p>
-  <input type="text" id="code" placeholder="Masukkan kode akses">
+  <input id="code" placeholder="Masukkan kode akses">
   <button onclick="unlock()">UNLOCK</button>
-  <div class="error" id="error">Kode salah atau belum aktif</div>
+  <div class="error" id="error">Kode salah / belum aktif</div>
 </div>
 
-<!-- 🔥 TRAINER -->
+<!-- ============ TRAINER ============ -->
 <div class="trainer" id="trainer">
 
-<div class="timer">⏱ 00:06</div>
+  <div class="timer">⏱ 00:06</div>
 
-<div class="title">TRAINER MODE</div>
+  <div class="title">TRAINER MODE</div>
 
-<div class="question">
-A bekerja 4 hari, B 6 hari.<br>
-Jika bersama?
-</div>
+  <div class="question">
+    A menyelesaikan pekerjaan 4 hari,<br>
+    B menyelesaikan 6 hari.<br>
+    Jika bekerja bersama?
+  </div>
 
-<div class="options pressure" id="opt">
-  <div>A. 5 hari</div>
-  <div>B. 4 hari</div>
-  <div>C. 2.4 hari</div>
-  <div>D. 10 hari</div>
-</div>
+  <div class="options pressure" id="options">
+    <div>A. 5 hari</div>
+    <div>B. 4 hari</div>
+    <div>C. 2.4 hari</div>
+    <div>D. 10 hari</div>
+  </div>
 
-<div class="wrong" id="wrong">SALAH</div>
+  <div class="wrong" id="wrong">SALAH</div>
 
-<div class="correct" id="correct">
-Kesalahan refleks: menjumlah waktu.<br>
-Ujian menghitung <b>laju kerja</b>.
-</div>
+  <div class="correct" id="correct">
+    Kesalahan refleks: menjumlah waktu.<br>
+    Ujian menghitung <b>laju kerja</b>, bukan hari.
+  </div>
 
 </div>
 </div>
 
 <script>
-/* === KODE AKSES === */
-const VALID_CODES = ["TRAINER19", "UJIAN2026", "LEVEL4"];
+/* ================= CONFIG ================= */
+const VALID_CODES = [
+  "TRAINER19",
+  "LEVEL4",
+  "UJIAN2026"
+];
 
-/* === UNLOCK === */
+/* ================= UNLOCK ================= */
 function unlock(){
   const input = document.getElementById("code").value.trim();
   if(VALID_CODES.includes(input)){
@@ -192,20 +225,20 @@ function unlock(){
   }
 }
 
-/* === TRAINER FLOW === */
+/* ================= TRAINER FLOW ================= */
 function startTrainer(){
-  const opt=document.getElementById('opt');
-  const wrong=document.getElementById('wrong');
-  const correct=document.getElementById('correct');
+  const options = document.getElementById("options");
+  const wrong = document.getElementById("wrong");
+  const correct = document.getElementById("correct");
 
   setTimeout(()=>{
-    opt.classList.remove('pressure');
-    wrong.classList.add('show');
+    options.classList.remove("pressure");
+    wrong.classList.add("show");
   },4200);
 
   setTimeout(()=>{
-    wrong.classList.remove('show');
-    correct.classList.add('show');
+    wrong.classList.remove("show");
+    correct.classList.add("show");
   },5600);
 }
 </script>
