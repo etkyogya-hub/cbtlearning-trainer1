@@ -3,13 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trainer Mode — Unlock</title>
-
+<title>Trainer Mode — 10 Soal</title>
 <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
 
 <style>
-/* ===== RESET ===== */
-*{box-sizing:border-box}
 body{
   margin:0;
   background:#020202;
@@ -20,8 +17,6 @@ body{
   align-items:center;
   height:100vh;
 }
-
-/* ===== FRAME ===== */
 .frame{
   width:360px;
   height:640px;
@@ -30,86 +25,32 @@ body{
   overflow:hidden;
 }
 
-/* ================= LOCK SCREEN ================= */
-.lock{
-  position:absolute;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-}
-.lock h1{
-  font-family:'Anton', sans-serif;
-  font-size:28px;
-  margin:0 0 8px 0;
-}
-.lock p{
-  font-size:14px;
-  opacity:.8;
-  margin:0 0 14px 0;
-}
-.lock input{
-  padding:10px;
-  background:#000;
-  border:1px solid #333;
-  color:#fff;
-  font-size:14px;
-}
-.lock button{
-  margin-top:10px;
-  padding:10px;
-  border:none;
-  background:#ff3b3b;
-  color:#fff;
-  font-weight:700;
-  cursor:pointer;
-}
-.error{
-  margin-top:8px;
-  font-size:12px;
-  color:#ff3b3b;
-  display:none;
-}
-
-/* ================= TRAINER MODE ================= */
-.trainer{display:none}
-
 /* TIMER */
 .timer{
   position:absolute;
   top:14px;
   right:18px;
-  font-size:14px;
   font-weight:800;
   color:#ff3b3b;
   animation:blink .7s infinite;
 }
-@keyframes blink{
-  0%,50%{opacity:1}
-  51%,100%{opacity:.3}
-}
+@keyframes blink{50%{opacity:.3}}
 
-/* TITLE */
+/* TEXT */
 .title{
-  font-family:'Anton', sans-serif;
+  font-family:'Anton';
   font-size:30px;
-  line-height:1.05;
   margin-bottom:14px;
 }
-
-/* QUESTION */
 .question{
   font-size:15px;
   line-height:1.45;
   margin-bottom:16px;
 }
-
-/* OPTIONS */
 .options div{
   border:1px solid #333;
   padding:10px;
   margin-bottom:8px;
-  font-size:14px;
   opacity:.8;
 }
 
@@ -119,11 +60,8 @@ body{
   25%{transform:translateX(-3px)}
   50%{transform:translateX(3px)}
   75%{transform:translateX(-3px)}
-  100%{transform:translateX(0)}
 }
-.pressure{
-  animation:shake .25s infinite;
-}
+.pressure{animation:shake .25s infinite}
 
 /* WRONG */
 .wrong{
@@ -133,106 +71,113 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-family:'Anton', sans-serif;
+  font-family:'Anton';
   font-size:32px;
   color:#ff3b3b;
   opacity:0;
 }
 .wrong.show{opacity:1}
 
-/* CORRECTION */
+/* CORRECT */
 .correct{
   position:absolute;
   bottom:18px;
   left:18px;
   right:18px;
-  background:#000;
   border:1px solid #222;
   padding:14px;
   font-size:13px;
-  line-height:1.4;
   opacity:0;
 }
-.correct.show{
-  opacity:1;
-  transition:.3s;
-}
+.correct.show{opacity:1}
 </style>
 </head>
 
 <body>
 <div class="frame">
 
-<!-- ============ LOCK ============ -->
-<div class="lock" id="lock">
-  <h1>TRAINER MODE</h1>
-  <p>
-    Ini bukan latihan soal.<br>
-    Ini latihan keputusan.
-  </p>
-  <input id="code" placeholder="Masukkan kode akses">
-  <button onclick="unlock()">UNLOCK</button>
-  <div class="error" id="error">Kode salah / belum aktif</div>
-</div>
+<div class="timer">⏱ 00:06</div>
+<div class="title">TRAINER MODE</div>
+<div class="question" id="q"></div>
+<div class="options pressure" id="opt"></div>
 
-<!-- ============ TRAINER ============ -->
-<div class="trainer" id="trainer">
+<div class="wrong" id="wrong">SALAH</div>
+<div class="correct" id="correct"></div>
 
-  <div class="timer">⏱ 00:06</div>
-
-  <div class="title">TRAINER MODE</div>
-
-  <div class="question">
-    A menyelesaikan pekerjaan 4 hari,<br>
-    B menyelesaikan 6 hari.<br>
-    Jika bekerja bersama?
-  </div>
-
-  <div class="options pressure" id="options">
-    <div>A. 5 hari</div>
-    <div>B. 4 hari</div>
-    <div>C. 2.4 hari</div>
-    <div>D. 10 hari</div>
-  </div>
-
-  <div class="wrong" id="wrong">SALAH</div>
-
-  <div class="correct" id="correct">
-    Kesalahan refleks: menjumlah waktu.<br>
-    Ujian menghitung <b>laju kerja</b>, bukan hari.
-  </div>
-
-</div>
 </div>
 
 <script>
-/* ================= CONFIG ================= */
-const VALID_CODES = [
-  "TRAINER19",
-  "LEVEL4",
-  "UJIAN2026"
+/* ================= 10 SOAL ================= */
+const SOAL = [
+{
+q:"A bekerja 4 hari, B 6 hari. Jika bersama?",
+o:["5 hari","4 hari","2.4 hari","10 hari"],
+c:"Kesalahan refleks: menjumlah waktu. Yang dihitung laju kerja."
+},
+{
+q:"Semua ASN pegawai negara. Sebagian pegawai negara dosen. Kesimpulan?",
+o:["Semua ASN dosen","Semua dosen ASN","Sebagian ASN mungkin dosen","Tidak ada ASN dosen"],
+c:"Logika tidak boleh lompat. Hanya 'sebagian mungkin'."
+},
+{
+q:"Jika semua X adalah Y, dan semua Y adalah Z?",
+o:["Semua Z adalah X","Semua X adalah Z","Sebagian Z adalah X","Tidak ada hubungan"],
+c:"Rantai penuh = X pasti masuk Z."
+},
+{
+q:"Anton lebih cepat dari Budi. Budi lebih cepat dari Caca. Siapa paling lambat?",
+o:["Anton","Budi","Caca","Tidak tahu"],
+c:"Urutan kecepatan = urutan kebalikan kelambatan."
+},
+{
+q:"Jika hari ini Senin, 10 hari lagi hari apa?",
+o:["Rabu","Kamis","Jumat","Sabtu"],
+c:"Hitung modulo 7, bukan dijumlah mentah."
+},
+{
+q:"Semua dokter pintar. Andi dokter. Kesimpulan?",
+o:["Andi mungkin pintar","Andi pintar","Semua pintar dokter","Tidak bisa disimpulkan"],
+c:"Premis universal → kesimpulan pasti."
+},
+{
+q:"2/3 dari 60 adalah?",
+o:["30","20","40","45"],
+c:"Refleks salah: setengah. Pecah pecahan dulu."
+},
+{
+q:"Jika A > B dan B > C, maka?",
+o:["C > A","A = C","A > C","Tidak pasti"],
+c:"Sifat transitif sering dilupakan saat tertekan."
+},
+{
+q:"Semua burung bisa terbang. Penguin burung. Maka?",
+o:["Benar","Salah","Sebagian benar","Tidak tahu"],
+c:"Premis salah → kesimpulan runtuh."
+},
+{
+q:"Jika 5 orang menyelesaikan kerja 10 hari, 10 orang butuh?",
+o:["20 hari","10 hari","5 hari","2 hari"],
+c:"Orang naik, waktu turun. Hubungan terbalik."
+}
 ];
 
-/* ================= UNLOCK ================= */
-function unlock(){
-  const input = document.getElementById("code").value.trim();
-  if(VALID_CODES.includes(input)){
-    document.getElementById("lock").style.display="none";
-    document.getElementById("trainer").style.display="block";
-    startTrainer();
-  }else{
-    document.getElementById("error").style.display="block";
-  }
-}
+let i = 0;
+const q = document.getElementById("q");
+const opt = document.getElementById("opt");
+const wrong = document.getElementById("wrong");
+const correct = document.getElementById("correct");
 
-/* ================= TRAINER FLOW ================= */
-function startTrainer(){
-  const options = document.getElementById("options");
-  const wrong = document.getElementById("wrong");
-  const correct = document.getElementById("correct");
+function loadSoal(){
+  const s = SOAL[i];
+  q.innerHTML = s.q;
+  opt.innerHTML = s.o.map(x=>`<div>${x}</div>`).join("");
+  correct.innerHTML = s.c;
+  opt.classList.add("pressure");
+  wrong.classList.remove("show");
+  correct.classList.remove("show");
 
   setTimeout(()=>{
-    options.classList.remove("pressure");
+    opt.classList.remove("pressure");
     wrong.classList.add("show");
   },4200);
 
@@ -240,7 +185,14 @@ function startTrainer(){
     wrong.classList.remove("show");
     correct.classList.add("show");
   },5600);
+
+  setTimeout(()=>{
+    i = (i+1) % SOAL.length;
+    loadSoal();
+  },9000);
 }
+
+loadSoal();
 </script>
 
 </body>
