@@ -156,20 +156,24 @@ body{
 </div>
 
 <script>
-/* ================= SOAL ================= */
-const SOAL = [
-{q:"A 4 hari, B 6 hari. Bersama?",o:["5","4","2.4","10"],c:"Yang dihitung laju kerja bukan hari"},
-{q:"Semua ASN pegawai negara. Sebagian pegawai dosen.",o:["Semua ASN dosen","Semua dosen ASN","Sebagian ASN mungkin dosen","Tidak ada ASN dosen"],c:"Logika tidak boleh lompat"},
-{q:"Anton lebih cepat dari Budi. Budi dari Caca.",o:["Anton","Budi","Caca","Tidak tahu"],c:"Urutan kecepatan dibalik"},
-{q:"Hari ini Senin. 10 hari lagi?",o:["Rabu","Kamis","Jumat","Sabtu"],c:"Gunakan modulo tujuh"},
-{q:"Semua dokter pintar. Andi dokter.",o:["Mungkin","Pasti","Tidak tahu","Salah"],c:"Premis universal menghasilkan kepastian"},
-{q:"5 orang 10 hari. 10 orang?",o:["20","10","5","2"],c:"Hubungan terbalik orang dan waktu"},
-{q:"Jika semua X Y dan semua Y Z.",o:["Z X","X Z","Sebagian","Tidak ada"],c:"Rantai penuh memastikan hubungan"},
-{q:"2/3 dari 60?",o:["20","30","40","45"],c:"Pecahan dihitung bertahap"},
-{q:"Semua burung terbang. Penguin burung.",o:["Benar","Salah","Sebagian","Tidak tahu"],c:"Premis salah merusak kesimpulan"},
-{q:"Diskon 50% lalu 50%?",o:["Gratis","25%","50%","75%"],c:"Diskon bertingkat bukan penjumlahan"}
+/* ================= ITEMS ================= */
+const ITEMS=[
+{
+ q:"A 4 hari, B 6 hari. Bersama?",
+ o:["5","4","2.4","10"],
+ r:"Yang dihitung laju kerja"
+},
+{
+ q:"Semua ASN pegawai negara. Sebagian dosen.",
+ o:["Semua ASN dosen","Sebagian ASN dosen","Tidak ada","Pasti"],
+ r:"Logika tidak boleh lompat"
+},
+{
+ q:"5 orang 10 hari. 10 orang?",
+ o:["20","10","5","2"],
+ r:"Orang dan waktu terbalik"
+}
 ];
-
 
 /* SHUFFLE */
 for(let i=ITEMS.length-1;i>0;i--){
