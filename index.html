@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Item Shock Hook</title>
+<title>Trainer Mode – Shock Hook</title>
 <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
 
 <style>
@@ -25,18 +25,14 @@ body{
   overflow:hidden;
 }
 
-/* ================= TITLE ================= */
+/* ===== TITLE ===== */
 .title{
   font-family:'Anton';
   font-size:36px;
   margin-bottom:14px;
 }
-
-/* SHOCK ON ITEM CHANGE */
 .shock{
-  animation:
-    titleShake .12s infinite,
-    titleFlash .18s infinite;
+  animation:titleShake .12s infinite, titleFlash .18s infinite;
 }
 @keyframes titleShake{
   0%{transform:translate(0)}
@@ -52,22 +48,20 @@ body{
   100%{color:#fff}
 }
 
-/* ================= QUESTION ================= */
+/* ===== QUESTION ===== */
 .question{
   font-size:15px;
   line-height:1.45;
   margin-bottom:14px;
 }
 
-/* ================= OPTIONS ================= */
+/* ===== OPTIONS ===== */
 .options div{
   border:1px solid #333;
   padding:10px;
   margin-bottom:8px;
-  opacity:.8;
+  opacity:.85;
 }
-
-/* PRESSURE */
 @keyframes shakeX{
   0%{transform:translateX(0)}
   25%{transform:translateX(-4px)}
@@ -75,58 +69,7 @@ body{
 }
 .pressure{animation:shakeX .22s infinite}
 
-/* ================= RATIONALE ================= */
-.rationale{
-  position:absolute;
-  top:58%;
-  left:18px;
-  right:18px;
-  font-family:'Anton';
-  font-size:28px;          /* BIGGER */
-  text-align:center;
-  opacity:0;
-  transform:scale(1.35);
-}
-
-/* SHOW */
-.rationale.show{
-  opacity:1;
-  animation:zoomOut .6s ease-out forwards;
-}
-
-/* ZOOM OUT */
-@keyframes zoomOut{
-  from{transform:scale(1.35)}
-  to{transform:scale(1)}
-}
-
-/* WORD FLASH + WAVE */
-.word{
-  display:inline-block;
-  opacity:0;
-}
-.word.on{
-  opacity:1;
-  animation:
-    flashWord .35s steps(1,end),
-    wave 1.2s ease-in-out infinite;
-}
-
-/* FLASH */
-@keyframes flashWord{
-  0%{opacity:0;filter:brightness(2)}
-  40%{opacity:1}
-  100%{opacity:.9}
-}
-
-/* WAVE (HALUS) */
-@keyframes wave{
-  0%{transform:translateY(0)}
-  50%{transform:translateY(-6px)}
-  100%{transform:translateY(0)}
-}
-
-/* WRONG */
+/* ===== WRONG ===== */
 .wrong{
   position:absolute;
   inset:0;
@@ -140,15 +83,54 @@ body{
   opacity:0;
 }
 .wrong.show{opacity:1}
+
+/* ===== RATIONALE ===== */
+.rationale{
+  position:absolute;
+  top:58%;
+  left:18px;
+  right:18px;
+  font-family:'Anton';
+  font-size:28px;
+  text-align:center;
+  opacity:0;
+  transform:scale(1.35);
+}
+.rationale.show{
+  opacity:1;
+  animation:zoomOut .6s ease-out forwards;
+}
+@keyframes zoomOut{
+  from{transform:scale(1.35)}
+  to{transform:scale(1)}
+}
+.word{
+  display:inline-block;
+  opacity:0;
+}
+.word.on{
+  opacity:1;
+  animation:flashWord .35s steps(1,end), wave 1.2s ease-in-out infinite;
+}
+@keyframes flashWord{
+  0%{opacity:0;filter:brightness(2)}
+  40%{opacity:1}
+  100%{opacity:.9}
+}
+@keyframes wave{
+  0%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
+  100%{transform:translateY(0)}
+}
 </style>
 </head>
 
 <body>
 <div class="frame">
 
-<div class="title shock" id="title">TRAINER MODE</div>
+<div class="title" id="title">TRAINER MODE</div>
 <div class="question" id="q"></div>
-<div class="options pressure" id="opt"></div>
+<div class="options" id="opt"></div>
 
 <div class="wrong" id="wrong">SALAH</div>
 <div class="rationale" id="rat"></div>
@@ -156,46 +138,30 @@ body{
 </div>
 
 <script>
-/* ================= ITEMS (30 SOAL) ================= */
+/* ===== HOOK POOLS ===== */
+const HOOK_START = [
+  "STOP DI SINI",
+  "JANGAN JAWAB CEPAT",
+  "99% SALAH DI SINI",
+  "KELIHATAN MUDAH?",
+  "OTAKMU KEJEBAK",
+  "DETIK INI MENENTUKAN"
+];
+
+const HOOK_BEFORE_WRONG = [
+  "INSTING MENIPU",
+  "KEBANYAKAN SALAH",
+  "SALAH ARAH",
+  "LOGIKA RUNTUH",
+  "TERLAMBAT SADAR"
+];
+
+/* ===== ITEMS (CONTOH) ===== */
 const ITEMS = [
-
-/* ===== SNBT LOGIKA ===== */
-{
- q:"Jika semua A adalah B dan semua B adalah C, maka?",
- o:["A adalah C","C adalah A","Sebagian A C","Tidak ada hubungan"],
- r:"Rantai penuh memastikan hubungan"
-},
-{
- q:"Tidak semua siswa rajin. Sebagian siswa pintar.",
- o:["Semua pintar","Sebagian rajin","Sebagian pintar","Tidak ada"],
- r:"Sebagian tidak menghasilkan kepastian"
-},
-{
- q:"Jika hari ini Rabu, 100 hari lagi hari apa?",
- o:["Kamis","Jumat","Sabtu","Minggu"],
- r:"Gunakan modulo tujuh"
-},
-{
- q:"Anton lebih tinggi dari Budi. Budi dari Caca.",
- o:["Anton","Budi","Caca","Tidak tahu"],
- r:"Urutan tidak boleh dibalik"
-},
-{
- q:"Semua burung bisa terbang. Penguin burung.",
- o:["Benar","Salah","Sebagian","Tidak tahu"],
- r:"Premis salah merusak kesimpulan"
-},
-
-/* ===== SNBT KUANTITATIF ===== */
 {
  q:"A 4 hari, B 6 hari. Bersama?",
  o:["5","4","2.4","10"],
  r:"Yang dihitung laju kerja"
-},
-{
- q:"5 orang 10 hari. 10 orang?",
- o:["20","10","5","2"],
- r:"Orang dan waktu terbalik"
 },
 {
  q:"Diskon 50% lalu 50% lagi?",
@@ -203,67 +169,26 @@ const ITEMS = [
  r:"Diskon bertingkat bukan penjumlahan"
 },
 {
- q:"2/3 dari 3/4 dari 120?",
- o:["40","60","80","90"],
- r:"Kerjakan bertahap"
-},
-
-/* ===== ASN LOGIKA ===== */
-{
- q:"Semua ASN wajib netral. Budi tidak netral.",
- o:["Budi ASN","Budi bukan ASN","Netral","Tidak tahu"],
- r:"Kontrapositif berlaku"
-},
-{
- q:"Jika aturan ditaati maka disiplin meningkat. Disiplin meningkat.",
- o:["Aturan ditaati","Tidak ditaati","Mungkin ditaati","Pasti ditaati"],
- r:"Akibat tidak menjamin sebab"
-},
-{
- q:"Tidak ada pegawai terlambat. Susi pegawai.",
- o:["Susi terlambat","Susi tidak terlambat","Mungkin terlambat","Tidak tahu"],
- r:"Premis universal kuat"
-},
-
-/* ===== ASN KUANTITATIF ===== */
-{
- q:"8 orang selesai 6 hari. 12 orang?",
- o:["4","6","8","9"],
- r:"Perbandingan terbalik"
-},
-{
- q:"Rata-rata 5 orang 80. Satu keluar jadi 75.",
- o:["100","95","90","85"],
- r:"Total dulu baru dikurangi"
-},
-{
- q:"Harga naik 20% lalu turun 20%.",
- o:["Tetap","Turun","Naik","Sama"],
- r:"Basis persentase berbeda"
-},
-{
- q:"x+y=10 dan x−y=2.",
- o:["4","5","6","8"],
- r:"Eliminasi cepat"
+ q:"Jika semua A adalah B dan semua B adalah C, maka?",
+ o:["A adalah C","C adalah A","Sebagian","Tidak ada"],
+ r:"Rantai penuh memastikan hubungan"
 }
-
 ];
 
-/* ================= SHUFFLE ================= */
+/* ===== SHUFFLE ===== */
 for(let i=ITEMS.length-1;i>0;i--){
   const j=Math.floor(Math.random()*(i+1));
   [ITEMS[i],ITEMS[j]]=[ITEMS[j],ITEMS[i]];
 }
 
-/* ================= ENGINE ================= */
-let idx=0;
+let idx=0, beat;
 const title=document.getElementById("title");
 const qEl=document.getElementById("q");
 const optEl=document.getElementById("opt");
 const wrong=document.getElementById("wrong");
 const rat=document.getElementById("rat");
-let beat;
 
+/* ===== WORD PLAYER ===== */
 function playWords(words){
   let i=0;
   clearInterval(beat);
@@ -272,17 +197,23 @@ function playWords(words){
     if(i<words.length){
       words[i].classList.add("on");
       i++;
-    } else clearInterval(beat);
+    }else clearInterval(beat);
   },260);
 }
 
+/* ===== MAIN ENGINE ===== */
 function loadItem(){
   const it=ITEMS[idx];
 
-  title.classList.add("shock");
   wrong.classList.remove("show");
   rat.classList.remove("show");
   rat.innerHTML="";
+  optEl.classList.remove("pressure");
+
+  /* SHOCK #1 */
+  title.textContent = it.hookStart ||
+    HOOK_START[Math.floor(Math.random()*HOOK_START.length)];
+  title.classList.add("shock");
 
   qEl.textContent=it.q;
   optEl.innerHTML=it.o.map(x=>`<div>${x}</div>`).join("");
@@ -290,11 +221,22 @@ function loadItem(){
 
   setTimeout(()=>title.classList.remove("shock"),2000);
 
+  /* SHOCK #2 */
+  setTimeout(()=>{
+    title.textContent = it.hookFail ||
+      HOOK_BEFORE_WRONG[Math.floor(Math.random()*HOOK_BEFORE_WRONG.length)];
+    title.classList.add("shock");
+  },3300);
+
+  setTimeout(()=>title.classList.remove("shock"),4200);
+
+  /* WRONG */
   setTimeout(()=>{
     optEl.classList.remove("pressure");
     wrong.classList.add("show");
   },3800);
 
+  /* RATIONALE */
   setTimeout(()=>{
     wrong.classList.remove("show");
     rat.classList.add("show");
@@ -307,6 +249,7 @@ function loadItem(){
     playWords([...rat.children]);
   },5200);
 
+  /* NEXT */
   setTimeout(()=>{
     idx=(idx+1)%ITEMS.length;
     loadItem();
@@ -315,7 +258,6 @@ function loadItem(){
 
 loadItem();
 </script>
-
 
 </body>
 </html>
