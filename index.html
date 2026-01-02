@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trainer Mode – Clean Rationale</title>
+<title>CBT Trainer Mode – Unified Inject</title>
 <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
 
 <style>
@@ -97,9 +97,7 @@ body{
   text-align:center;
   opacity:0;
 }
-.rationale.show{
-  opacity:1;
-}
+.rationale.show{opacity:1}
 </style>
 </head>
 
@@ -117,107 +115,93 @@ body{
 </audio>
 
 <script>
-/* ================= ITEMS ================= */
-/* RATIONALE DITULIS MANUAL, SPESIFIK KE SOAL */
-const ITEMS = shuffle([
-{
- hook1:"SOAL INI MENIPU OTOMATIS",
- hook2:"LOGIKA KAMU KEPIKIRAN INI",
- q:"Jika p maka q. q terjadi. Kesimpulan yang tepat?",
- o:["p terjadi","p tidak terjadi","tidak dapat ditentukan","p pasti"],
- r:"Dalam logika implikasi, akibat (q) yang terjadi tidak bisa digunakan untuk memastikan sebab (p). Karena itu, tidak ada kepastian apakah p terjadi atau tidak."
-},
-{
- hook1:"KATA SEBAGIAN BIKIN JEBLOK",
- hook2:"INI KESALAHAN UMUM",
- q:"Sebagian ASN adalah dosen. Kesimpulan yang benar?",
- o:["Semua ASN dosen","Sebagian dosen ASN","Tidak ada dosen ASN","Semua dosen ASN"],
- r:"Pernyataan sebagian hanya menjamin ada irisan. Tidak pernah boleh dinaikkan menjadi semua atau dihilangkan menjadi tidak ada."
-},
-{
- hook1:"INI BUKAN TAMBAH HARI",
- hook2:"YANG DIHITUNG LAJU",
- q:"Pekerjaan selesai oleh A 4 hari dan B 6 hari. Jika bersama?",
- o:["5 hari","4 hari","2,4 hari","10 hari"],
- r:"Yang dijumlahkan adalah laju kerja per hari. A = 1/4, B = 1/6, total = 5/12 pekerjaan per hari, sehingga waktu = 12/5 = 2,4 hari."
+/* ================= ENGINE UTILS ================= */
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
 }
-const ITEMS = shuffle([
-  /* ================= SNBT LOGIKA ================= */
+
+/* ================= INJECTED BANKS ================= */
+
+/* CORE / MANUAL RATIONALE */
+const BANK_CORE = [
+  {
+    hook1:"SOAL INI MENIPU OTOMATIS",
+    hook2:"LOGIKA KAMU KEPIKIRAN INI",
+    q:"Jika p maka q. q terjadi. Kesimpulan yang tepat?",
+    o:["p terjadi","p tidak terjadi","tidak dapat ditentukan","p pasti"],
+    r:"Dalam implikasi logika, akibat (q) tidak menjamin sebab (p)."
+  },
+  {
+    hook1:"KATA SEBAGIAN BIKIN JEBLOK",
+    hook2:"INI KESALAHAN UMUM",
+    q:"Sebagian ASN adalah dosen. Kesimpulan yang benar?",
+    o:["Semua ASN dosen","Sebagian dosen ASN","Tidak ada dosen ASN","Semua dosen ASN"],
+    r:"Kata sebagian hanya menjamin ada irisan, tidak boleh dinaikkan jadi semua."
+  }
+];
+
+/* SNBT LOGIKA */
+const BANK_LOGIKA = [
   {
     hook1:"LOGIKA DASAR TAPI MENIPU",
     hook2:"PERHATIKAN SEBAGIAN",
     q:"Jika semua A adalah B dan semua B adalah C, maka?",
     o:["A adalah C","C adalah A","Sebagian","Tidak ada"],
-    r:"Semua A ke B dan semua B ke C → semua A pasti ke C. Opsi lain salah karena tidak mengikuti rantai logika penuh."
-  },
-  {
-    hook1:"JANGAN TERLALU GENERAL",
-    hook2:"SEBAGIAN ≠ SEMUA",
-    q:"Tidak semua siswa rajin. Sebagian siswa pintar.",
-    o:["Semua pintar","Sebagian rajin","Sebagian pintar","Tidak ada"],
-    r:"Hanya sebagian yang diketahui pintar; tidak bisa disimpulkan semua atau tidak ada."
-  },
-  {
-    hook1:"PERHITUNGAN HARI ITU PENTING",
-    hook2:"YANG DIHITUNG LAJU KERJA",
-    q:"Pekerjaan selesai oleh A 4 hari dan B 6 hari. Jika bekerja bersama?",
-    o:["5 hari","4 hari","2,4 hari","10 hari"],
-    r:"Hitung laju kerja: A=1/4, B=1/6 per hari → total=5/12 per hari → 12/5=2,4 hari."
+    r:"Relasi transitif: semua A pasti termasuk C."
   },
   {
     hook1:"TRANSITIF ITU KUNCI",
     hook2:"SIAPA PALING TINGGI?",
-    q:"Anton lebih tinggi dari Budi. Budi lebih tinggi dari Caca. Siapa paling tinggi?",
+    q:"Anton > Budi, Budi > Caca. Siapa paling tinggi?",
     o:["Anton","Budi","Caca","Tidak tahu"],
-    r:"Relasi transitif: Anton > Budi > Caca → Anton tertinggi."
+    r:"Relasi berantai menunjukkan Anton paling tinggi."
   },
   {
-    hook1:"JANGAN TERBINGUNG PREMIS SALAH",
-    hook2:"PENGUJIAN PENGANTAR",
-    q:"Semua burung bisa terbang. Penguin burung. Benar atau salah?",
+    hook1:"PREMIS SALAH",
+    hook2:"JANGAN TERJEBAK",
+    q:"Semua burung bisa terbang. Penguin burung.",
     o:["Benar","Salah","Sebagian","Tidak tahu"],
-    r:"Premis salah karena penguin burung tapi tidak bisa terbang → jawaban Salah."
-  },
-  /* ================= SNBT KUANTITATIF ================= */
+    r:"Premis salah karena penguin tidak bisa terbang."
+  }
+];
+
+/* SNBT KUANTITATIF */
+const BANK_KUANT = [
   {
-    hook1:"HITUNG LAJU KERJA",
-    hook2:"JANGAN HANYA TEBARANGKAN",
+    hook1:"INI BUKAN TAMBAH HARI",
+    hook2:"YANG DIHITUNG LAJU",
     q:"A 4 hari, B 6 hari. Bersama?",
-    o:["5","4","2.4","10"],
-    r:"A=1/4, B=1/6 → total 5/12 per hari → 12/5=2,4 hari."
-  },
-  {
-    hook1:"LEBIH ORANG → CEPAT SELESAI",
-    hook2:"PERBANDINGAN TERBALIK",
-    q:"5 orang 10 hari. 10 orang berapa hari?",
-    o:["20","10","5","2"],
-    r:"5 orang 10 hari → 50 pekerjaan. 10 orang → 50/10=5 hari."
+    o:["5 hari","4 hari","2,4 hari","10 hari"],
+    r:"A=1/4, B=1/6 → total 5/12 → waktu 12/5 = 2,4 hari."
   },
   {
     hook1:"DISKON BERTAHAP",
-    hook2:"BANYAK ORANG SALAH HITUNG",
-    q:"Diskon 50% lalu 50% lagi. Total sisa?",
+    hook2:"BANYAK YANG SALAH",
+    q:"Diskon 50% lalu 50% lagi. Sisa?",
     o:["Gratis","25%","50%","75%"],
-    r:"Harga ×0,5 ×0,5 = 0,25 → sisa 25%."
+    r:"0,5 × 0,5 = 0,25 → sisa 25%."
   },
   {
-    hook1:"KERJAKAN LANGKAH DEMI LANGKAH",
-    hook2:"HATI-HATI FRAKSI",
-    q:"2/3 dari 3/4 dari 120?",
-    o:["40","60","80","90"],
-    r:"3/4 ×120=90 → 2/3 ×90=60."
-  },
-  {
-    hook1:"MESIN BANYAK, WAKTU CEPAT",
-    hook2:"HITUNG PROPORSIONAL",
-    q:"3 mesin 3 barang 3 menit. 6 mesin 6 barang?",
-    o:["3","6","9","12"],
-    r:"Setiap mesin 1 barang 1 menit. 6 mesin → 6 barang tetap 3 menit."
+    hook1:"PERBANDINGAN TERBALIK",
+    hook2:"LEBIH ORANG LEBIH CEPAT",
+    q:"5 orang 10 hari. 10 orang?",
+    o:["20","10","5","2"],
+    r:"Total kerja tetap: 50 → 50/10 = 5 hari."
   }
+];
+
+/* ================= MERGE + SHUFFLE ================= */
+const ITEMS = shuffle([
+  ...BANK_CORE,
+  ...BANK_LOGIKA,
+  ...BANK_KUANT
 ]);
 
-]);
-
+/* ================= PLAYER ================= */
 let idx = 0;
 const title = document.getElementById("title");
 const qEl = document.getElementById("q");
@@ -226,15 +210,6 @@ const wrong = document.getElementById("wrong");
 const rat = document.getElementById("rat");
 const cue = document.getElementById("cue");
 cue.volume = 0.25;
-
-/* SHUFFLE */
-function shuffle(a){
-  for(let i=a.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
-  return a;
-}
 
 function loadItem(){
   const it = ITEMS[idx];
@@ -245,9 +220,7 @@ function loadItem(){
   optEl.innerHTML = it.o.map(x=>`<div>${x}</div>`).join("");
   optEl.classList.add("pressure");
 
-  setTimeout(()=>{
-    title.textContent = it.hook2;
-  },1200);
+  setTimeout(()=>title.textContent = it.hook2,1200);
 
   setTimeout(()=>{
     title.classList.remove("shock");
