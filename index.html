@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Trainer Product Mode</title>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shock Hook Trainer</title>
 <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
 
 <style>
 body{
   margin:0;
-  background:#020202;
+  background:#000;
   color:#fff;
   font-family:Arial, sans-serif;
   display:flex;
@@ -18,206 +17,236 @@ body{
   align-items:center;
   height:100vh;
 }
-
 .frame{
   width:360px;
   height:640px;
   padding:22px;
-  box-sizing:border-box;
   position:relative;
   overflow:hidden;
 }
 
-/* ===== TITLE ===== */
+/* TITLE */
 .title{
-  font-family:'Anton', sans-serif;
-  font-size:30px;
+  font-family:'Anton';
+  font-size:38px;
   text-align:center;
-  margin-bottom:14px;
-  animation: shock 0.9s infinite;
+  margin-bottom:12px;
+}
+.shock{
+  animation:shake .12s infinite, flash .18s infinite;
+}
+@keyframes shake{
+  0%{transform:translate(0)}
+  25%{transform:translate(-3px,1px)}
+  50%{transform:translate(3px,-1px)}
+  75%{transform:translate(-2px,1px)}
+}
+@keyframes flash{
+  0%{color:#fff}
+  25%{color:#ff2d2d}
+  50%{color:#00ffe5}
+  75%{color:#ffe600}
+  100%{color:#fff}
 }
 
-@keyframes shock{
-  0%{transform:scale(1); color:#fff;}
-  25%{transform:scale(1.08) rotate(-1deg); color:#ff2e2e;}
-  50%{transform:scale(1.12) rotate(1deg); color:#ffe600;}
-  75%{transform:scale(1.05); color:#2effc1;}
-  100%{transform:scale(1); color:#fff;}
-}
+/* QUESTION */
+.question{font-size:15px;line-height:1.45;margin-bottom:14px}
 
-/* ===== QUESTION ===== */
-.question{
-  font-size:15px;
-  line-height:1.45;
-  margin-bottom:16px;
-}
-
-/* ===== OPTIONS ===== */
+/* OPTIONS */
 .options div{
   border:1px solid #333;
   padding:10px;
   margin-bottom:8px;
-  font-size:14px;
-  opacity:.8;
+  opacity:.85;
+}
+.pressure{animation:shakeX .22s infinite}
+@keyframes shakeX{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-4px)}
+  50%{transform:translateX(4px)}
 }
 
-/* ===== RATIONALE ===== */
+/* WRONG */
+.wrong{
+  position:absolute;
+  inset:0;
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Anton';
+  font-size:40px;
+  color:#ff2d2d;
+  opacity:0;
+}
+.wrong.show{opacity:1}
+
+/* RATIONALE */
 .rationale{
   position:absolute;
-  left:22px;
-  right:22px;
-  bottom:100px;
-  font-size:20px;
-  font-weight:700;
+  top:55%;
+  left:18px;
+  right:18px;
+  font-family:'Anton';
+  font-size:28px;
   text-align:center;
   opacity:0;
 }
+.rationale.show{opacity:1}
 
 .word{
   display:inline-block;
-  margin:0 3px;
-  animation: wave 1s infinite;
-}
-
-@keyframes wave{
-  0%{transform:translateY(0); color:#fff;}
-  50%{transform:translateY(-10px); color:#ff3b3b;}
-  100%{transform:translateY(0); color:#fff;}
-}
-
-/* ===== TIMER ===== */
-.timer{
-  position:absolute;
-  top:14px;
-  right:18px;
-  font-size:13px;
-  font-weight:700;
-  color:#ff3b3b;
-}
-
-/* ===== LOCK ===== */
-.lock{
-  position:absolute;
-  bottom:22px;
-  left:22px;
-  right:22px;
-  text-align:center;
-  font-size:14px;
-  font-weight:700;
   opacity:0;
 }
-.lock.on{opacity:1; transition:.4s;}
+.word.on{
+  opacity:1;
+  animation:wave 1.2s ease-in-out infinite, flashWord .3s steps(1,end);
+}
+@keyframes wave{
+  0%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
+  100%{transform:translateY(0)}
+}
+@keyframes flashWord{
+  0%{filter:brightness(2)}
+  100%{filter:brightness(1)}
+}
 </style>
 </head>
 
 <body>
 <div class="frame">
-
-<div class="timer">⏱ 07</div>
-<div class="title" id="title">FATAL ERROR</div>
-
-<div class="question" id="question"></div>
-<div class="options" id="options"></div>
-
-<div class="rationale" id="rationale"></div>
-
-<div class="lock" id="lock">
-Trainer Mode aktif.<br>Tanpa sistem = tumbang.
+  <div class="title" id="title"></div>
+  <div class="question" id="q"></div>
+  <div class="options" id="opt"></div>
+  <div class="wrong" id="wrong">SALAH</div>
+  <div class="rationale" id="rat"></div>
 </div>
 
-</div>
-
-<!-- AUDIO -->
-<audio id="bgm" autoplay loop>
-  <source src="music.mp3" type="audio/mpeg">
+<audio id="cue" preload="auto">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-soft-click-1121.mp3">
 </audio>
-<audio id="cue" src="cue.mp3"></audio>
-<audio id="fail" src="fail.mp3"></audio>
 
 <script>
-/* ================= DATA ================= */
-const ITEMS = [
+/* ========= AI ITEMS ========= */
+const ITEMS = shuffle([
 {
-  hook1:"90% SALAH DI SINI",
-  hook2:"KEPUTUSAN TERBURU-BURU",
-  q:"Jika A selesai 4 hari dan B 6 hari, berapa hari bersama?",
-  opts:["5 hari","4 hari","2.4 hari","10 hari"],
-  r:"Yang dijumlah LAJU, bukan WAKTU"
+ trap:"implikasi terbalik",
+ q:"Jika p maka q. q terjadi. Kesimpulan?",
+ o:["p terjadi","p tidak terjadi","p mungkin","p pasti"],
+ rationale:(c)=> c===2
+  ?"Otakmu ingin membalik logika, padahal akibat tidak menjamin sebab."
+  :"Pilihan ini muncul dari refleks logika terbalik."
 },
 {
-  hook1:"LOGIKA MENIPU",
-  hook2:"OTAK TERKUNCI",
-  q:"Semua A adalah B. Sebagian B adalah C. Maka?",
-  opts:["Semua A C","Sebagian A C","Tidak pasti","Semua C A"],
-  r:"Kesimpulan tidak WAJIB"
+ trap:"sebagian ≠ semua",
+ q:"Sebagian ASN dosen. Kesimpulan benar?",
+ o:["Semua ASN dosen","Sebagian dosen ASN","Tidak ada","Semua dosen ASN"],
+ rationale:(c)=> c===1
+  ?"Kata sebagian tidak pernah boleh ditarik jadi semua."
+  :"Ini jebakan karena terbiasa menyamaratakan."
 },
 {
-  hook1:"KELIHATAN MUDAH",
-  hook2:"INI JEBEK",
-  q:"20% dari 50 lebih besar dari?",
-  opts:["10% dari 120","25% dari 30","15% dari 70","20% dari 40"],
-  r:"Bandingkan NILAI, bukan persen"
+ trap:"laju kerja",
+ q:"A 4 hari, B 6 hari. Bersama?",
+ o:["5","4","2.4","10"],
+ rationale:(c)=> c===2
+  ?"Yang dijumlahkan adalah laju, bukan harinya."
+  :"Ini refleks salah karena menjumlah waktu."
 }
-];
+]);
 
-/* ================= ELEMENT ================= */
-const title = document.getElementById("title");
-const question = document.getElementById("question");
-const options = document.getElementById("options");
-const rationale = document.getElementById("rationale");
-const cue = document.getElementById("cue");
-const fail = document.getElementById("fail");
+let used = 0;
 
-/* ================= AUDIO DUCK ================= */
-function duck(){
-  cue.volume=0.08; fail.volume=0.06;
-  setTimeout(()=>{cue.volume=0.22; fail.volume=0.18;},600);
-}
-
-/* ================= FLOW ================= */
-let i=0;
-
-function showItem(){
-  const it=ITEMS[i];
-  title.innerText=it.hook1;
-  question.innerText=it.q;
-  options.innerHTML=it.opts.map(o=>`<div>${o}</div>`).join("");
-  rationale.style.opacity=0;
+/* ========= HOOK A/B ========= */
+function genHook(trap,phase){
+  const map={
+    "implikasi terbalik":[
+      ["OTAK SERING KESELIP","KAMU BARUSAN KEPIKIRAN INI"],
+      ["LOGIKA DIBALIK","INI KESALAHAN UMUM"]
+    ],
+    "sebagian ≠ semua":[
+      ["KATA SEBAGIAN MENIPU","INI JEBATAN PIKIRAN"],
+      ["JANGAN DIGENERAL","OTAK SUKA NYEPLONG"]
+    ],
+    "laju kerja":[
+      ["INI BUKAN TAMBAH HARI","JEBATAN LAJU"],
+      ["SOAL KELIHATAN MUDAH","OTAK SERING SALAH"]
+    ]
+  };
+  return map[trap][phase][Math.floor(Math.random()*2)];
 }
 
-function shockSecond(){
-  title.innerText=ITEMS[i].hook2;
-  fail.currentTime=0; duck(); fail.play().catch(()=>{});
+/* ========= DOM ========= */
+const title=document.getElementById("title");
+const qEl=document.getElementById("q");
+const optEl=document.getElementById("opt");
+const wrong=document.getElementById("wrong");
+const rat=document.getElementById("rat");
+const cue=document.getElementById("cue");
+cue.volume=.25;
+
+/* ========= UTILS ========= */
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function playWords(words){
+  let i=0;
+  const beat=setInterval(()=>{
+    if(i>0) words[i-1].classList.remove("on");
+    if(i<words.length){
+      words[i].classList.add("on");
+      i++;
+    }else clearInterval(beat);
+  },260);
 }
 
-function showRationale(){
-  rationale.innerHTML="";
-  ITEMS[i].r.split(" ").forEach((w,n)=>{
-    const s=document.createElement("span");
-    s.className="word";
-    s.style.animationDelay=(n*0.12)+"s";
-    s.innerText=w;
-    rationale.appendChild(s);
-  });
-  rationale.style.opacity=1;
+/* ========= FLOW ========= */
+function loadItem(){
+  const it=ITEMS[used++ % ITEMS.length];
+
+  title.textContent=genHook(it.trap,0);
+  title.classList.add("shock");
+
+  qEl.textContent=it.q;
+  optEl.innerHTML=it.o.map(x=>`<div>${x}</div>`).join("");
+  optEl.classList.add("pressure");
+
+  setTimeout(()=>{
+    title.textContent=genHook(it.trap,1);
+  },1200);
+
+  setTimeout(()=>{
+    title.classList.remove("shock");
+    optEl.classList.remove("pressure");
+    wrong.classList.add("show");
+  },3000);
+
+  setTimeout(()=>{
+    wrong.classList.remove("show");
+    rat.innerHTML="";
+    rat.classList.add("show");
+    it.rationale(2).split(" ").forEach(w=>{
+      const s=document.createElement("span");
+      s.className="word";
+      s.textContent=w+" ";
+      rat.appendChild(s);
+    });
+    playWords([...rat.children]);
+  },4400);
+
+  setTimeout(()=>{
+    cue.currentTime=0; cue.play().catch(()=>{});
+    rat.classList.remove("show");
+    loadItem();
+  },7200);
 }
 
-function next(){
-  cue.currentTime=0; duck(); cue.play().catch(()=>{});
-  i=(i+1)%ITEMS.length;
-  showItem();
-  run();
-}
-
-function run(){
-  setTimeout(shockSecond,1500);        // shock 2
-  setTimeout(showRationale,3200);      // rationale
-  setTimeout(next,5200);               // freeze + next
-}
-
-showItem();
-run();
+loadItem();
 </script>
-
 </body>
 </html>
