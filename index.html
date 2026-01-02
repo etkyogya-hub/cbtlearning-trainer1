@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trainer Mode — Shuffle</title>
+<title>Trainer Mode — Shock Title</title>
 <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
 
 <style>
 body{
   margin:0;
-  background:#020202;
+  background:#000;
   color:#fff;
   font-family:Arial, sans-serif;
   display:flex;
@@ -30,23 +30,55 @@ body{
   position:absolute;
   top:14px;
   right:18px;
-  font-weight:800;
-  color:#ff3b3b;
-  animation:blink .7s infinite;
+  font-weight:900;
+  color:#ff2d2d;
+  animation:blink .6s infinite;
 }
-@keyframes blink{50%{opacity:.3}}
+@keyframes blink{50%{opacity:.25}}
 
-/* TEXT */
+/* ================= TITLE ================= */
 .title{
   font-family:'Anton';
-  font-size:30px;
+  font-size:34px;
+  text-align:left;
   margin-bottom:14px;
+  letter-spacing:1px;
 }
+
+/* SHOCK MODE (0–2 DETIK) */
+.shock{
+  animation:
+    shakeTitle .12s infinite,
+    flashColor .18s infinite;
+}
+
+/* TITLE SHAKE */
+@keyframes shakeTitle{
+  0%{transform:translate(0)}
+  20%{transform:translate(-3px,1px)}
+  40%{transform:translate(3px,-1px)}
+  60%{transform:translate(-2px,1px)}
+  80%{transform:translate(2px,-1px)}
+  100%{transform:translate(0)}
+}
+
+/* COLOR FLASH */
+@keyframes flashColor{
+  0%{color:#ffffff}
+  25%{color:#ff2d2d}
+  50%{color:#00ffea}
+  75%{color:#ffe600}
+  100%{color:#ffffff}
+}
+
+/* QUESTION */
 .question{
   font-size:15px;
   line-height:1.45;
   margin-bottom:16px;
 }
+
+/* OPTIONS */
 .options div{
   border:1px solid #333;
   padding:10px;
@@ -57,11 +89,11 @@ body{
 /* PRESSURE */
 @keyframes shake{
   0%{transform:translateX(0)}
-  25%{transform:translateX(-3px)}
-  50%{transform:translateX(3px)}
-  75%{transform:translateX(-3px)}
+  25%{transform:translateX(-4px)}
+  50%{transform:translateX(4px)}
+  75%{transform:translateX(-4px)}
 }
-.pressure{animation:shake .25s infinite}
+.pressure{animation:shake .22s infinite}
 
 /* WRONG */
 .wrong{
@@ -72,8 +104,8 @@ body{
   align-items:center;
   justify-content:center;
   font-family:'Anton';
-  font-size:34px;
-  color:#ff3b3b;
+  font-size:38px;
+  color:#ff2d2d;
   opacity:0;
 }
 .wrong.show{opacity:1}
@@ -81,37 +113,38 @@ body{
 /* RATIONALE */
 .correct{
   position:absolute;
-  bottom:16px;
-  left:16px;
-  right:16px;
+  bottom:18px;
+  left:18px;
+  right:18px;
+  padding:18px;
   border:1px solid #222;
-  padding:16px;
   font-family:'Anton';
-  font-size:20px;
-  line-height:1.3;
+  font-size:24px;
   text-align:center;
   opacity:0;
-  transform:translateY(20px);
 }
 .correct.show{
   opacity:1;
-  animation:floatUpDown 1.4s ease-in-out infinite alternate;
+  animation:floatAgg 1.2s ease-in-out infinite alternate;
+}
+@keyframes floatAgg{
+  from{transform:translateY(14px)}
+  to{transform:translateY(-10px)}
 }
 
-@keyframes floatUpDown{
-  from{transform:translateY(12px)}
-  to{transform:translateY(-8px)}
-}
-
-/* WORD FLASH */
+/* WORD FLASH BEAT */
 .word{
   opacity:0;
-  animation:flash .6s forwards;
+  display:inline-block;
 }
-@keyframes flash{
-  0%{opacity:0}
+.word.on{
+  opacity:1;
+  animation:flashBeat .32s steps(1,end);
+}
+@keyframes flashBeat{
+  0%{opacity:0;filter:brightness(2)}
   40%{opacity:1}
-  100%{opacity:.85}
+  100%{opacity:.9}
 }
 </style>
 </head>
@@ -120,7 +153,11 @@ body{
 <div class="frame">
 
 <div class="timer">⏱ 00:06</div>
-<div class="title">TRAINER MODE</div>
+
+<div class="title shock" id="title">
+TRAINER MODE
+</div>
+
 <div class="question" id="q"></div>
 <div class="options pressure" id="opt"></div>
 
@@ -130,52 +167,60 @@ body{
 </div>
 
 <script>
+/* ================= TITLE SHOCK CONTROL ================= */
+const title=document.getElementById("title");
+setTimeout(()=>{
+  title.classList.remove("shock"); // balik normal setelah hook
+},2000);
+
 /* ================= SOAL ================= */
-const SOAL = [
-{q:"A 4 hari, B 6 hari. Bersama?",o:["5","4","2.4","10"],c:"Yang dihitung laju kerja bukan hari"},
-{q:"Semua ASN pegawai negara. Sebagian pegawai dosen.",o:["Semua ASN dosen","Semua dosen ASN","Sebagian ASN mungkin dosen","Tidak ada ASN dosen"],c:"Logika tidak boleh lompat"},
-{q:"Anton lebih cepat dari Budi. Budi dari Caca.",o:["Anton","Budi","Caca","Tidak tahu"],c:"Urutan kecepatan dibalik"},
-{q:"Hari ini Senin. 10 hari lagi?",o:["Rabu","Kamis","Jumat","Sabtu"],c:"Gunakan modulo tujuh"},
-{q:"Semua dokter pintar. Andi dokter.",o:["Mungkin","Pasti","Tidak tahu","Salah"],c:"Premis universal menghasilkan kepastian"},
-{q:"5 orang 10 hari. 10 orang?",o:["20","10","5","2"],c:"Hubungan terbalik orang dan waktu"},
-{q:"Jika semua X Y dan semua Y Z.",o:["Z X","X Z","Sebagian","Tidak ada"],c:"Rantai penuh memastikan hubungan"},
-{q:"2/3 dari 60?",o:["20","30","40","45"],c:"Pecahan dihitung bertahap"},
-{q:"Semua burung terbang. Penguin burung.",o:["Benar","Salah","Sebagian","Tidak tahu"],c:"Premis salah merusak kesimpulan"},
-{q:"Diskon 50% lalu 50%?",o:["Gratis","25%","50%","75%"],c:"Diskon bertingkat bukan penjumlahan"}
+const SOAL=[
+{q:"A 4 hari, B 6 hari. Bersama?",o:["5","4","2.4","10"],c:"Yang dihitung laju kerja bukan waktu"},
+{q:"Semua ASN pegawai negara. Sebagian dosen.",o:["Semua ASN dosen","Sebagian ASN dosen","Tidak ada","Pasti"],c:"Logika tidak boleh lompat"},
+{q:"5 orang 10 hari. 10 orang?",o:["20","10","5","2"],c:"Hubungan orang dan waktu terbalik"}
 ];
 
-/* ================= SHUFFLE ================= */
-function shuffle(arr){
-  for(let i=arr.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [arr[i],arr[j]]=[arr[j],arr[i]];
-  }
+/* SHUFFLE */
+for(let i=SOAL.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1));
+  [SOAL[i],SOAL[j]]=[SOAL[j],SOAL[i]];
 }
-shuffle(SOAL);
 
-let i=0;
+let idx=0;
 const qEl=document.getElementById("q");
 const optEl=document.getElementById("opt");
 const wrong=document.getElementById("wrong");
 const correct=document.getElementById("correct");
 
-function showRationale(text){
+let beatInterval;
+
+/* BEAT ENGINE */
+function startBeat(words){
+  let i=0;
+  clearInterval(beatInterval);
+  beatInterval=setInterval(()=>{
+    if(i>0) words[i-1].classList.remove("on");
+    if(i<words.length){
+      words[i].classList.add("on");
+      i++;
+    }else{
+      clearInterval(beatInterval);
+    }
+  },250);
+}
+
+function load(){
+  const s=SOAL[idx];
+  qEl.textContent=s.q;
+  optEl.innerHTML=s.o.map(x=>`<div>${x}</div>`).join("");
   correct.innerHTML="";
-  const words=text.split(" ");
-  words.forEach((w,idx)=>{
+
+  s.c.split(" ").forEach(w=>{
     const span=document.createElement("span");
     span.className="word";
-    span.style.animationDelay=`${idx*0.15}s`;
     span.textContent=w+" ";
     correct.appendChild(span);
   });
-}
-
-function loadSoal(){
-  const s=SOAL[i];
-  qEl.textContent=s.q;
-  optEl.innerHTML=s.o.map(x=>`<div>${x}</div>`).join("");
-  showRationale(s.c);
 
   optEl.classList.add("pressure");
   wrong.classList.remove("show");
@@ -189,15 +234,16 @@ function loadSoal(){
   setTimeout(()=>{
     wrong.classList.remove("show");
     correct.classList.add("show");
+    startBeat([...correct.children]);
   },5600);
 
   setTimeout(()=>{
-    i=(i+1)%SOAL.length;
-    loadSoal();
-  },9500);
+    idx=(idx+1)%SOAL.length;
+    load();
+  },9800);
 }
 
-loadSoal();
+load();
 </script>
 
 </body>
