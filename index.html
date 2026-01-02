@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trainer Mode — 10 Soal</title>
+<title>Trainer Mode — Shuffle</title>
 <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
 
 <style>
@@ -72,24 +72,47 @@ body{
   align-items:center;
   justify-content:center;
   font-family:'Anton';
-  font-size:32px;
+  font-size:34px;
   color:#ff3b3b;
   opacity:0;
 }
 .wrong.show{opacity:1}
 
-/* CORRECT */
+/* RATIONALE */
 .correct{
   position:absolute;
-  bottom:18px;
-  left:18px;
-  right:18px;
+  bottom:16px;
+  left:16px;
+  right:16px;
   border:1px solid #222;
-  padding:14px;
-  font-size:13px;
+  padding:16px;
+  font-family:'Anton';
+  font-size:20px;
+  line-height:1.3;
+  text-align:center;
   opacity:0;
+  transform:translateY(20px);
 }
-.correct.show{opacity:1}
+.correct.show{
+  opacity:1;
+  animation:floatUpDown 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes floatUpDown{
+  from{transform:translateY(12px)}
+  to{transform:translateY(-8px)}
+}
+
+/* WORD FLASH */
+.word{
+  opacity:0;
+  animation:flash .6s forwards;
+}
+@keyframes flash{
+  0%{opacity:0}
+  40%{opacity:1}
+  100%{opacity:.85}
+}
 </style>
 </head>
 
@@ -107,77 +130,59 @@ body{
 </div>
 
 <script>
-/* ================= 10 SOAL ================= */
+/* ================= SOAL ================= */
 const SOAL = [
-{
-q:"A bekerja 4 hari, B 6 hari. Jika bersama?",
-o:["5 hari","4 hari","2.4 hari","10 hari"],
-c:"Kesalahan refleks: menjumlah waktu. Yang dihitung laju kerja."
-},
-{
-q:"Semua ASN pegawai negara. Sebagian pegawai negara dosen. Kesimpulan?",
-o:["Semua ASN dosen","Semua dosen ASN","Sebagian ASN mungkin dosen","Tidak ada ASN dosen"],
-c:"Logika tidak boleh lompat. Hanya 'sebagian mungkin'."
-},
-{
-q:"Jika semua X adalah Y, dan semua Y adalah Z?",
-o:["Semua Z adalah X","Semua X adalah Z","Sebagian Z adalah X","Tidak ada hubungan"],
-c:"Rantai penuh = X pasti masuk Z."
-},
-{
-q:"Anton lebih cepat dari Budi. Budi lebih cepat dari Caca. Siapa paling lambat?",
-o:["Anton","Budi","Caca","Tidak tahu"],
-c:"Urutan kecepatan = urutan kebalikan kelambatan."
-},
-{
-q:"Jika hari ini Senin, 10 hari lagi hari apa?",
-o:["Rabu","Kamis","Jumat","Sabtu"],
-c:"Hitung modulo 7, bukan dijumlah mentah."
-},
-{
-q:"Semua dokter pintar. Andi dokter. Kesimpulan?",
-o:["Andi mungkin pintar","Andi pintar","Semua pintar dokter","Tidak bisa disimpulkan"],
-c:"Premis universal → kesimpulan pasti."
-},
-{
-q:"2/3 dari 60 adalah?",
-o:["30","20","40","45"],
-c:"Refleks salah: setengah. Pecah pecahan dulu."
-},
-{
-q:"Jika A > B dan B > C, maka?",
-o:["C > A","A = C","A > C","Tidak pasti"],
-c:"Sifat transitif sering dilupakan saat tertekan."
-},
-{
-q:"Semua burung bisa terbang. Penguin burung. Maka?",
-o:["Benar","Salah","Sebagian benar","Tidak tahu"],
-c:"Premis salah → kesimpulan runtuh."
-},
-{
-q:"Jika 5 orang menyelesaikan kerja 10 hari, 10 orang butuh?",
-o:["20 hari","10 hari","5 hari","2 hari"],
-c:"Orang naik, waktu turun. Hubungan terbalik."
-}
+{q:"A 4 hari, B 6 hari. Bersama?",o:["5","4","2.4","10"],c:"Yang dihitung laju kerja bukan hari"},
+{q:"Semua ASN pegawai negara. Sebagian pegawai dosen.",o:["Semua ASN dosen","Semua dosen ASN","Sebagian ASN mungkin dosen","Tidak ada ASN dosen"],c:"Logika tidak boleh lompat"},
+{q:"Anton lebih cepat dari Budi. Budi dari Caca.",o:["Anton","Budi","Caca","Tidak tahu"],c:"Urutan kecepatan dibalik"},
+{q:"Hari ini Senin. 10 hari lagi?",o:["Rabu","Kamis","Jumat","Sabtu"],c:"Gunakan modulo tujuh"},
+{q:"Semua dokter pintar. Andi dokter.",o:["Mungkin","Pasti","Tidak tahu","Salah"],c:"Premis universal menghasilkan kepastian"},
+{q:"5 orang 10 hari. 10 orang?",o:["20","10","5","2"],c:"Hubungan terbalik orang dan waktu"},
+{q:"Jika semua X Y dan semua Y Z.",o:["Z X","X Z","Sebagian","Tidak ada"],c:"Rantai penuh memastikan hubungan"},
+{q:"2/3 dari 60?",o:["20","30","40","45"],c:"Pecahan dihitung bertahap"},
+{q:"Semua burung terbang. Penguin burung.",o:["Benar","Salah","Sebagian","Tidak tahu"],c:"Premis salah merusak kesimpulan"},
+{q:"Diskon 50% lalu 50%?",o:["Gratis","25%","50%","75%"],c:"Diskon bertingkat bukan penjumlahan"}
 ];
 
-let i = 0;
-const q = document.getElementById("q");
-const opt = document.getElementById("opt");
-const wrong = document.getElementById("wrong");
-const correct = document.getElementById("correct");
+/* ================= SHUFFLE ================= */
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+}
+shuffle(SOAL);
+
+let i=0;
+const qEl=document.getElementById("q");
+const optEl=document.getElementById("opt");
+const wrong=document.getElementById("wrong");
+const correct=document.getElementById("correct");
+
+function showRationale(text){
+  correct.innerHTML="";
+  const words=text.split(" ");
+  words.forEach((w,idx)=>{
+    const span=document.createElement("span");
+    span.className="word";
+    span.style.animationDelay=`${idx*0.15}s`;
+    span.textContent=w+" ";
+    correct.appendChild(span);
+  });
+}
 
 function loadSoal(){
-  const s = SOAL[i];
-  q.innerHTML = s.q;
-  opt.innerHTML = s.o.map(x=>`<div>${x}</div>`).join("");
-  correct.innerHTML = s.c;
-  opt.classList.add("pressure");
+  const s=SOAL[i];
+  qEl.textContent=s.q;
+  optEl.innerHTML=s.o.map(x=>`<div>${x}</div>`).join("");
+  showRationale(s.c);
+
+  optEl.classList.add("pressure");
   wrong.classList.remove("show");
   correct.classList.remove("show");
 
   setTimeout(()=>{
-    opt.classList.remove("pressure");
+    optEl.classList.remove("pressure");
     wrong.classList.add("show");
   },4200);
 
@@ -187,9 +192,9 @@ function loadSoal(){
   },5600);
 
   setTimeout(()=>{
-    i = (i+1) % SOAL.length;
+    i=(i+1)%SOAL.length;
     loadSoal();
-  },9000);
+  },9500);
 }
 
 loadSoal();
