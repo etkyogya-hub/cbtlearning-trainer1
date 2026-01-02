@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trainer Mode – Shock Hook</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Trainer Product Mode</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
 
 <style>
 body{
   margin:0;
-  background:#000;
+  background:#020202;
   color:#fff;
   font-family:Arial, sans-serif;
   display:flex;
@@ -17,42 +18,38 @@ body{
   align-items:center;
   height:100vh;
 }
+
 .frame{
   width:360px;
   height:640px;
   padding:22px;
+  box-sizing:border-box;
   position:relative;
   overflow:hidden;
 }
 
 /* ===== TITLE ===== */
 .title{
-  font-family:'Anton';
-  font-size:36px;
+  font-family:'Anton', sans-serif;
+  font-size:30px;
+  text-align:center;
   margin-bottom:14px;
+  animation: shock 0.9s infinite;
 }
-.shock{
-  animation:titleShake .12s infinite, titleFlash .18s infinite;
-}
-@keyframes titleShake{
-  0%{transform:translate(0)}
-  25%{transform:translate(-3px,1px)}
-  50%{transform:translate(3px,-1px)}
-  75%{transform:translate(-2px,1px)}
-}
-@keyframes titleFlash{
-  0%{color:#fff}
-  25%{color:#ff2d2d}
-  50%{color:#00ffe5}
-  75%{color:#ffe600}
-  100%{color:#fff}
+
+@keyframes shock{
+  0%{transform:scale(1); color:#fff;}
+  25%{transform:scale(1.08) rotate(-1deg); color:#ff2e2e;}
+  50%{transform:scale(1.12) rotate(1deg); color:#ffe600;}
+  75%{transform:scale(1.05); color:#2effc1;}
+  100%{transform:scale(1); color:#fff;}
 }
 
 /* ===== QUESTION ===== */
 .question{
   font-size:15px;
   line-height:1.45;
-  margin-bottom:14px;
+  margin-bottom:16px;
 }
 
 /* ===== OPTIONS ===== */
@@ -60,203 +57,166 @@ body{
   border:1px solid #333;
   padding:10px;
   margin-bottom:8px;
-  opacity:.85;
+  font-size:14px;
+  opacity:.8;
 }
-@keyframes shakeX{
-  0%{transform:translateX(0)}
-  25%{transform:translateX(-4px)}
-  50%{transform:translateX(4px)}
-}
-.pressure{animation:shakeX .22s infinite}
-
-/* ===== WRONG ===== */
-.wrong{
-  position:absolute;
-  inset:0;
-  background:#000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:'Anton';
-  font-size:38px;
-  color:#ff2d2d;
-  opacity:0;
-}
-.wrong.show{opacity:1}
 
 /* ===== RATIONALE ===== */
 .rationale{
   position:absolute;
-  top:58%;
-  left:18px;
-  right:18px;
-  font-family:'Anton';
-  font-size:28px;
+  left:22px;
+  right:22px;
+  bottom:100px;
+  font-size:20px;
+  font-weight:700;
   text-align:center;
   opacity:0;
-  transform:scale(1.35);
 }
-.rationale.show{
-  opacity:1;
-  animation:zoomOut .6s ease-out forwards;
-}
-@keyframes zoomOut{
-  from{transform:scale(1.35)}
-  to{transform:scale(1)}
-}
+
 .word{
   display:inline-block;
+  margin:0 3px;
+  animation: wave 1s infinite;
+}
+
+@keyframes wave{
+  0%{transform:translateY(0); color:#fff;}
+  50%{transform:translateY(-10px); color:#ff3b3b;}
+  100%{transform:translateY(0); color:#fff;}
+}
+
+/* ===== TIMER ===== */
+.timer{
+  position:absolute;
+  top:14px;
+  right:18px;
+  font-size:13px;
+  font-weight:700;
+  color:#ff3b3b;
+}
+
+/* ===== LOCK ===== */
+.lock{
+  position:absolute;
+  bottom:22px;
+  left:22px;
+  right:22px;
+  text-align:center;
+  font-size:14px;
+  font-weight:700;
   opacity:0;
 }
-.word.on{
-  opacity:1;
-  animation:flashWord .35s steps(1,end), wave 1.2s ease-in-out infinite;
-}
-@keyframes flashWord{
-  0%{opacity:0;filter:brightness(2)}
-  40%{opacity:1}
-  100%{opacity:.9}
-}
-@keyframes wave{
-  0%{transform:translateY(0)}
-  50%{transform:translateY(-6px)}
-  100%{transform:translateY(0)}
-}
+.lock.on{opacity:1; transition:.4s;}
 </style>
 </head>
 
 <body>
 <div class="frame">
 
-<div class="title" id="title">TRAINER MODE</div>
-<div class="question" id="q"></div>
-<div class="options" id="opt"></div>
+<div class="timer">⏱ 07</div>
+<div class="title" id="title">FATAL ERROR</div>
 
-<div class="wrong" id="wrong">SALAH</div>
-<div class="rationale" id="rat"></div>
+<div class="question" id="question"></div>
+<div class="options" id="options"></div>
+
+<div class="rationale" id="rationale"></div>
+
+<div class="lock" id="lock">
+Trainer Mode aktif.<br>Tanpa sistem = tumbang.
+</div>
 
 </div>
 
+<!-- AUDIO -->
+<audio id="bgm" autoplay loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+<audio id="cue" src="cue.mp3"></audio>
+<audio id="fail" src="fail.mp3"></audio>
+
 <script>
-/* ===== HOOK POOLS ===== */
-const HOOK_START = [
-  "STOP DI SINI",
-  "JANGAN JAWAB CEPAT",
-  "99% SALAH DI SINI",
-  "KELIHATAN MUDAH?",
-  "OTAKMU KEJEBAK",
-  "DETIK INI MENENTUKAN"
-];
-
-const HOOK_BEFORE_WRONG = [
-  "INSTING MENIPU",
-  "KEBANYAKAN SALAH",
-  "SALAH ARAH",
-  "LOGIKA RUNTUH",
-  "TERLAMBAT SADAR"
-];
-
-/* ===== ITEMS (CONTOH) ===== */
+/* ================= DATA ================= */
 const ITEMS = [
 {
- q:"A 4 hari, B 6 hari. Bersama?",
- o:["5","4","2.4","10"],
- r:"Yang dihitung laju kerja"
+  hook1:"90% SALAH DI SINI",
+  hook2:"KEPUTUSAN TERBURU-BURU",
+  q:"Jika A selesai 4 hari dan B 6 hari, berapa hari bersama?",
+  opts:["5 hari","4 hari","2.4 hari","10 hari"],
+  r:"Yang dijumlah LAJU, bukan WAKTU"
 },
 {
- q:"Diskon 50% lalu 50% lagi?",
- o:["Gratis","25%","50%","75%"],
- r:"Diskon bertingkat bukan penjumlahan"
+  hook1:"LOGIKA MENIPU",
+  hook2:"OTAK TERKUNCI",
+  q:"Semua A adalah B. Sebagian B adalah C. Maka?",
+  opts:["Semua A C","Sebagian A C","Tidak pasti","Semua C A"],
+  r:"Kesimpulan tidak WAJIB"
 },
 {
- q:"Jika semua A adalah B dan semua B adalah C, maka?",
- o:["A adalah C","C adalah A","Sebagian","Tidak ada"],
- r:"Rantai penuh memastikan hubungan"
+  hook1:"KELIHATAN MUDAH",
+  hook2:"INI JEBEK",
+  q:"20% dari 50 lebih besar dari?",
+  opts:["10% dari 120","25% dari 30","15% dari 70","20% dari 40"],
+  r:"Bandingkan NILAI, bukan persen"
 }
 ];
 
-/* ===== SHUFFLE ===== */
-for(let i=ITEMS.length-1;i>0;i--){
-  const j=Math.floor(Math.random()*(i+1));
-  [ITEMS[i],ITEMS[j]]=[ITEMS[j],ITEMS[i]];
+/* ================= ELEMENT ================= */
+const title = document.getElementById("title");
+const question = document.getElementById("question");
+const options = document.getElementById("options");
+const rationale = document.getElementById("rationale");
+const cue = document.getElementById("cue");
+const fail = document.getElementById("fail");
+
+/* ================= AUDIO DUCK ================= */
+function duck(){
+  cue.volume=0.08; fail.volume=0.06;
+  setTimeout(()=>{cue.volume=0.22; fail.volume=0.18;},600);
 }
 
-let idx=0, beat;
-const title=document.getElementById("title");
-const qEl=document.getElementById("q");
-const optEl=document.getElementById("opt");
-const wrong=document.getElementById("wrong");
-const rat=document.getElementById("rat");
+/* ================= FLOW ================= */
+let i=0;
 
-/* ===== WORD PLAYER ===== */
-function playWords(words){
-  let i=0;
-  clearInterval(beat);
-  beat=setInterval(()=>{
-    if(i>0) words[i-1].classList.remove("on");
-    if(i<words.length){
-      words[i].classList.add("on");
-      i++;
-    }else clearInterval(beat);
-  },260);
+function showItem(){
+  const it=ITEMS[i];
+  title.innerText=it.hook1;
+  question.innerText=it.q;
+  options.innerHTML=it.opts.map(o=>`<div>${o}</div>`).join("");
+  rationale.style.opacity=0;
 }
 
-/* ===== MAIN ENGINE ===== */
-function loadItem(){
-  const it=ITEMS[idx];
-
-  wrong.classList.remove("show");
-  rat.classList.remove("show");
-  rat.innerHTML="";
-  optEl.classList.remove("pressure");
-
-  /* SHOCK #1 */
-  title.textContent = it.hookStart ||
-    HOOK_START[Math.floor(Math.random()*HOOK_START.length)];
-  title.classList.add("shock");
-
-  qEl.textContent=it.q;
-  optEl.innerHTML=it.o.map(x=>`<div>${x}</div>`).join("");
-  optEl.classList.add("pressure");
-
-  setTimeout(()=>title.classList.remove("shock"),2000);
-
-  /* SHOCK #2 */
-  setTimeout(()=>{
-    title.textContent = it.hookFail ||
-      HOOK_BEFORE_WRONG[Math.floor(Math.random()*HOOK_BEFORE_WRONG.length)];
-    title.classList.add("shock");
-  },3300);
-
-  setTimeout(()=>title.classList.remove("shock"),4200);
-
-  /* WRONG */
-  setTimeout(()=>{
-    optEl.classList.remove("pressure");
-    wrong.classList.add("show");
-  },3800);
-
-  /* RATIONALE */
-  setTimeout(()=>{
-    wrong.classList.remove("show");
-    rat.classList.add("show");
-    it.r.split(" ").forEach(w=>{
-      const s=document.createElement("span");
-      s.className="word";
-      s.textContent=w+" ";
-      rat.appendChild(s);
-    });
-    playWords([...rat.children]);
-  },5200);
-
-  /* NEXT */
-  setTimeout(()=>{
-    idx=(idx+1)%ITEMS.length;
-    loadItem();
-  },9000);
+function shockSecond(){
+  title.innerText=ITEMS[i].hook2;
+  fail.currentTime=0; duck(); fail.play().catch(()=>{});
 }
 
-loadItem();
+function showRationale(){
+  rationale.innerHTML="";
+  ITEMS[i].r.split(" ").forEach((w,n)=>{
+    const s=document.createElement("span");
+    s.className="word";
+    s.style.animationDelay=(n*0.12)+"s";
+    s.innerText=w;
+    rationale.appendChild(s);
+  });
+  rationale.style.opacity=1;
+}
+
+function next(){
+  cue.currentTime=0; duck(); cue.play().catch(()=>{});
+  i=(i+1)%ITEMS.length;
+  showItem();
+  run();
+}
+
+function run(){
+  setTimeout(shockSecond,1500);        // shock 2
+  setTimeout(showRationale,3200);      // rationale
+  setTimeout(next,5200);               // freeze + next
+}
+
+showItem();
+run();
 </script>
 
 </body>
