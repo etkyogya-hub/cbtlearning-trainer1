@@ -141,6 +141,152 @@ const ITEMS = shuffle([
  o:["5 hari","4 hari","2,4 hari","10 hari"],
  r:"Yang dijumlahkan adalah laju kerja per hari. A = 1/4, B = 1/6, total = 5/12 pekerjaan per hari, sehingga waktu = 12/5 = 2,4 hari."
 }
+  {
+    category:"SNBT_LOGIKA",
+    q:"Jika semua A adalah B dan semua B adalah C, maka?",
+    options:["A adalah C","C adalah A","Sebagian","Tidak ada"],
+    answer:0,
+    rationale:"Rantai penuh memastikan hubungan: semua A ke B, semua B ke C → semua A ke C."
+  },
+  {
+    category:"SNBT_LOGIKA",
+    q:"Tidak semua siswa rajin. Sebagian siswa pintar.",
+    options:["Semua pintar","Sebagian rajin","Sebagian pintar","Tidak ada"],
+    answer:2,
+    rationale:"Kesimpulan hanya bisa diambil pada bagian yang pasti, sehingga hanya sebagian siswa pintar bisa dijamin."
+  },
+  {
+    category:"SNBT_LOGIKA",
+    q:"Jika hari ini Rabu, 100 hari lagi hari apa?",
+    options:["Kamis","Jumat","Sabtu","Minggu"],
+    answer:2,
+    rationale:"Gunakan modulo 7: 100 ÷ 7 = 14 minggu + 2 hari → Rabu + 2 hari = Jumat, jadi jawaban benar: Sabtu."
+  },
+  {
+    category:"SNBT_LOGIKA",
+    q:"Anton lebih tinggi dari Budi. Budi lebih tinggi dari Caca.",
+    options:["Anton","Budi","Caca","Tidak tahu"],
+    answer:0,
+    rationale:"Relasi transitif: Anton > Budi > Caca → Anton pasti yang tertinggi."
+  },
+  {
+    category:"SNBT_LOGIKA",
+    q:"Semua burung bisa terbang. Penguin burung.",
+    options:["Benar","Salah","Sebagian","Tidak tahu"],
+    answer:1,
+    rationale:"Premis 'semua burung bisa terbang' salah karena penguin burung tapi tidak bisa terbang, jadi jawaban Salah."
+  },
+
+  /* ================= SNBT KUANTITATIF ================= */
+  {
+    category:"SNBT_KUANTITATIF",
+    q:"A 4 hari, B 6 hari. Bersama?",
+    options:["5","4","2.4","10"],
+    answer:2,
+    rationale:"Hitung laju kerja: A=1/4 per hari, B=1/6 per hari. Bersama=1/4+1/6=5/12, total hari=12/5=2.4 hari."
+  },
+  {
+    category:"SNBT_KUANTITATIF",
+    q:"5 orang 10 hari. 10 orang berapa hari?",
+    options:["20","10","5","2"],
+    answer:3,
+    rationale:"Perbandingan terbalik: lebih banyak orang → lebih cepat selesai. 10 orang → 5×10/10=5 hari."
+  },
+  {
+    category:"SNBT_KUANTITATIF",
+    q:"Diskon 50% lalu 50% lagi?",
+    options:["Gratis","25%","50%","75%"],
+    answer:1,
+    rationale:"Diskon bertingkat: harga awal ×0.5 ×0.5 = 0.25 → diskon total = 75%, tersisa 25% harga."
+  },
+  {
+    category:"SNBT_KUANTITATIF",
+    q:"2/3 dari 3/4 dari 120?",
+    options:["40","60","80","90"],
+    answer:2,
+    rationale:"Hitung bertahap: 3/4×120=90, 2/3×90=60, jawaban 60."
+  },
+  {
+    category:"SNBT_KUANTITATIF",
+    q:"3 mesin 3 barang 3 menit. 6 mesin 6 barang berapa menit?",
+    options:["3","6","9","12"],
+    answer:0,
+    rationale:"Perbandingan langsung: setiap mesin 1 barang 1 menit, 6 mesin → 6 barang = 3 menit."
+  },
+
+  /* ================= ASN LOGIKA TIU ================= */
+  {
+    category:"ASN_TIU",
+    q:"Semua PNS adalah ASN. Sebagian ASN dosen.",
+    options:["Semua dosen ASN","Sebagian PNS dosen","Tidak pasti","Semua ASN dosen"],
+    answer:2,
+    rationale:"Sebagian tidak mengikat semua; tidak bisa disimpulkan lebih."
+  },
+  {
+    category:"ASN_TIU",
+    q:"Tidak semua pegawai rajin. Andi pegawai.",
+    options:["Andi rajin","Andi tidak rajin","Tidak pasti","Pasti rajin"],
+    answer:2,
+    rationale:"Tidak semua ≠ sebagian → tidak dapat dipastikan status Andi."
+  },
+  {
+    category:"ASN_TIU",
+    q:"Jika aturan ditaati maka disiplin meningkat. Disiplin meningkat.",
+    options:["Aturan ditaati","Tidak ditaati","Mungkin ditaati","Pasti ditaati"],
+    answer:2,
+    rationale:"Akibat tidak menjamin sebab; disiplin meningkat tidak selalu berarti aturan ditaati."
+  },
+  {
+    category:"ASN_TIU",
+    q:"Sebagian peserta lulus. Tidak semua peserta ASN.",
+    options:["Sebagian ASN lulus","Tidak ada ASN lulus","Tidak pasti","Semua lulus"],
+    answer:2,
+    rationale:"Dua sebagian tidak bertemu → kesimpulan tidak pasti."
+  },
+  {
+    category:"ASN_TIU",
+    q:"Semua ASN wajib netral. Budi tidak netral.",
+    options:["Budi ASN","Budi bukan ASN","Netral","Tidak tahu"],
+    answer:1,
+    rationale:"Jika semua ASN netral dan Budi tidak netral, maka Budi bukan ASN."
+  },
+
+  /* ================= ASN KUANTITATIF ================= */
+  {
+    category:"ASN_KUANT",
+    q:"8 orang selesai 6 hari. 12 orang?",
+    options:["4","6","8","9"],
+    answer:0,
+    rationale:"Perbandingan terbalik: lebih banyak orang → waktu lebih cepat. 8×6=48 pekerjaan, 48/12=4 hari."
+  },
+  {
+    category:"ASN_KUANT",
+    q:"Rata-rata 5 orang 80. Satu keluar, rata-rata 75. Nilai yang keluar?",
+    options:["100","95","90","85"],
+    answer:0,
+    rationale:"Total awal=5×80=400, sisa=4×75=300 → nilai yang keluar=400-300=100."
+  },
+  {
+    category:"ASN_KUANT",
+    q:"Perbandingan A:B = 2:3. Total 50. A berapa?",
+    options:["20","25","30","35"],
+    answer:0,
+    rationale:"Rasio 2:3 → total 5 bagian, 50/5=10 per bagian → A=2×10=20."
+  },
+  {
+    category:"ASN_KUANT",
+    q:"Harga naik 20% lalu turun 20%.",
+    options:["Tetap","Turun","Naik","Sama"],
+    answer:1,
+    rationale:"Naik 20% dari harga X → 1.2X, turun 20% → 1.2X×0.8=0.96X → harga turun 4%."
+  },
+  {
+    category:"ASN_KUANT",
+    q:"x+y=10 dan x−y=2. Nilai x?",
+    options:["4","5","6","8"],
+    answer:2,
+    rationale:"Hitung sistem persamaan: x=(10+2)/2=6."
+  }, 
 ]);
 
 let idx = 0;
