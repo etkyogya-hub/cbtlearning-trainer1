@@ -173,6 +173,170 @@ const ITEMS=[
  o:["20","10","5","2"],
  r:"Orang dan waktu terbalik"
 }
+  {
+ q:"Jika semua A adalah B dan semua B adalah C, maka?",
+ o:["A adalah C","C adalah A","Sebagian","Tidak ada"],
+ r:"Rantai penuh memastikan hubungan"
+},
+
+{
+ q:"Diskon 50% lalu 50% lagi?",
+ o:["Gratis","25%","50%","75%"],
+ r:"Diskon bertingkat bukan penjumlahan"
+},
+
+{
+ q:"A 4 hari, B 6 hari. Bersama?",
+ o:["5","4","2.4","10"],
+ r:"Yang dihitung laju kerja"
+}
+  const ITEMS = [
+
+/* ===== SNBT LOGIKA ===== */
+{
+ q:"Jika semua A adalah B dan semua B adalah C, maka?",
+ o:["A adalah C","C adalah A","Sebagian A C","Tidak ada hubungan"],
+ r:"Rantai penuh memastikan hubungan"
+},
+{
+ q:"Tidak semua siswa rajin. Sebagian siswa pintar.",
+ o:["Semua pintar","Sebagian rajin","Sebagian pintar","Tidak ada"],
+ r:"Sebagian tidak menghasilkan kepastian"
+},
+{
+ q:"Jika hari ini Rabu, 100 hari lagi hari apa?",
+ o:["Kamis","Jumat","Sabtu","Minggu"],
+ r:"Gunakan modulo tujuh"
+},
+{
+ q:"Anton lebih tinggi dari Budi. Budi dari Caca.",
+ o:["Anton","Budi","Caca","Tidak tahu"],
+ r:"Urutan tidak boleh dibalik"
+},
+{
+ q:"Semua burung bisa terbang. Penguin burung.",
+ o:["Benar","Salah","Sebagian","Tidak tahu"],
+ r:"Premis salah merusak kesimpulan"
+},
+{
+ q:"Jika p maka q. p salah.",
+ o:["q salah","q benar","q pasti","q tidak pasti"],
+ r:"Implikasi tidak bisa dibalik"
+},
+{
+ q:"Sebagian dokter ASN. Semua ASN pegawai negara.",
+ o:["Semua dokter ASN","Sebagian dokter pegawai","Tidak ada","Semua ASN dokter"],
+ r:"Sebagian tidak menjadi semua"
+},
+{
+ q:"Jika hujan maka jalan basah. Jalan basah.",
+ o:["Hujan","Tidak hujan","Mungkin hujan","Pasti hujan"],
+ r:"Akibat tidak memastikan sebab"
+},
+{
+ q:"Tidak ada mahasiswa malas. Sebagian mahasiswa suka tidur.",
+ o:["Semua rajin","Sebagian malas","Kontradiksi","Tidak tahu"],
+ r:"Tidur bukan malas"
+},
+{
+ q:"Jika A lebih cepat dari B dan B dari C.",
+ o:["A tercepat","C tercepat","B tercepat","Tidak tahu"],
+ r:"Relasi transitif"
+},
+
+/* ===== SNBT KUANTITATIF TRAP ===== */
+{
+ q:"A 4 hari, B 6 hari. Bersama?",
+ o:["5","4","2.4","10"],
+ r:"Yang dihitung laju kerja"
+},
+{
+ q:"5 orang 10 hari. 10 orang?",
+ o:["20","10","5","2"],
+ r:"Orang dan waktu terbalik"
+},
+{
+ q:"Diskon 50% lalu 50% lagi?",
+ o:["Gratis","25%","50%","75%"],
+ r:"Diskon bertingkat bukan jumlah"
+},
+{
+ q:"2/3 dari 3/4 dari 120?",
+ o:["40","60","80","90"],
+ r:"Kerjakan bertahap"
+},
+{
+ q:"3 mesin 3 barang 3 menit. 6 mesin 6 barang?",
+ o:["3","6","9","12"],
+ r:"Perbandingan langsung"
+},
+
+/* ===== ASN LOGIKA TIU ===== */
+{
+ q:"Semua PNS adalah ASN. Sebagian ASN dosen.",
+ o:["Semua dosen ASN","Sebagian PNS dosen","Tidak pasti","Semua ASN dosen"],
+ r:"Sebagian tidak mengikat"
+},
+{
+ q:"Tidak semua pegawai rajin. Andi pegawai.",
+ o:["Andi rajin","Andi tidak rajin","Tidak pasti","Pasti rajin"],
+ r:"Tidak semua ≠ sebagian"
+},
+{
+ q:"Jika aturan ditaati maka disiplin meningkat. Disiplin meningkat.",
+ o:["Aturan ditaati","Tidak ditaati","Mungkin ditaati","Pasti ditaati"],
+ r:"Akibat tidak menjamin sebab"
+},
+{
+ q:"Sebagian peserta lulus. Tidak semua peserta ASN.",
+ o:["Sebagian ASN lulus","Tidak ada ASN lulus","Tidak pasti","Semua lulus"],
+ r:"Dua sebagian tidak bertemu"
+},
+{
+ q:"Semua ASN wajib netral. Budi tidak netral.",
+ o:["Budi ASN","Budi bukan ASN","Netral","Tidak tahu"],
+ r:"Kontrapositif berlaku"
+},
+{
+ q:"Jika A maka B. Jika B maka C. A salah.",
+ o:["C salah","C benar","C tidak pasti","B salah"],
+ r:"Implikasi tidak berantai mundur"
+},
+{
+ q:"Tidak ada pegawai terlambat. Susi pegawai.",
+ o:["Susi terlambat","Susi tidak terlambat","Mungkin terlambat","Tidak tahu"],
+ r:"Premis universal kuat"
+},
+
+/* ===== ASN KUANTITATIF ===== */
+{
+ q:"8 orang selesai 6 hari. 12 orang?",
+ o:["4","6","8","9"],
+ r:"Perbandingan terbalik"
+},
+{
+ q:"Rata-rata 5 orang 80. Satu keluar, rata-rata 75.",
+ o:["100","95","90","85"],
+ r:"Total dulu baru selisih"
+},
+{
+ q:"Perbandingan A:B = 2:3. Total 50.",
+ o:["20","25","30","35"],
+ r:"Rasio dikalikan"
+},
+{
+ q:"Harga naik 20% lalu turun 20%.",
+ o:["Tetap","Turun","Naik","Sama"],
+ r:"Naik dan turun beda basis"
+},
+{
+ q:"x+y=10 dan x−y=2.",
+ o:["4","5","6","8"],
+ r:"Eliminasi cepat"
+}
+
+];
+
 ];
 
 /* SHUFFLE */
