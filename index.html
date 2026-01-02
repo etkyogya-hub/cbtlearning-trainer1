@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trainer Serial Content - Category Switcher</title>
+<title>Trainer Serial Content - SNBT & ASN</title>
 <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
 <style>
 body{
@@ -16,6 +16,15 @@ body{
   align-items:center;
   justify-content:center;
   height:100vh;
+}
+#categorySelector{
+  margin-bottom:8px;
+  background:#111;
+  color:#fff;
+  border:1px solid #333;
+  padding:6px 12px;
+  font-size:14px;
+  cursor:pointer;
 }
 .frame{
   width:360px;
@@ -117,16 +126,6 @@ body{
   opacity:0;
 }
 .wrong.show{opacity:1;}
-
-#categorySelector{
-  margin-bottom:8px;
-  background:#111;
-  color:#fff;
-  border:1px solid #333;
-  padding:6px 12px;
-  font-size:14px;
-  cursor:pointer;
-}
 </style>
 </head>
 <body>
@@ -151,15 +150,40 @@ body{
 function shuffle(array){let currentIndex=array.length,randomIndex;while(currentIndex!=0){randomIndex=Math.floor(Math.random()*currentIndex);currentIndex--;[array[currentIndex],array[randomIndex]]=[array[randomIndex],array[currentIndex]];}return array;}
 
 const ALL_ITEMS = shuffle([
-  /* SNBT */
-  {category:"SNBT", hook1:"LOGIKA DASAR MENIPU", hook2:"PERHATIKAN SEBAGIAN", q:"Jika semua A adalah B dan semua B adalah C, maka?", o:["A adalah C","C adalah A","Sebagian","Tidak ada"], r:"Semua A ke B dan semua B ke C → semua A pasti ke C. Opsi lain salah karena tidak mengikuti rantai logika penuh."},
-  {category:"SNBT", hook1:"TRANSITIF ITU KUNCI", hook2:"SIAPA PALING TINGGI?", q:"Anton lebih tinggi dari Budi. Budi lebih tinggi dari Caca. Siapa paling tinggi?", o:["Anton","Budi","Caca","Tidak tahu"], r:"Relasi transitif: Anton > Budi > Caca → Anton tertinggi."},
-  {category:"SNBT", hook1:"HITUNG LAJU KERJA", hook2:"JANGAN HANYA TEBARANGKAN", q:"Pekerjaan selesai oleh A 4 hari dan B 6 hari. Jika bekerja bersama?", o:["5 hari","4 hari","2,4 hari","10 hari"], r:"Hitung laju kerja: A=1/4, B=1/6 per hari → total=5/12 per hari → 12/5=2,4 hari."},
 
-  /* ASN */
-  {category:"ASN", hook1:"LEBIH ORANG → CEPAT SELESAI", hook2:"PERBANDINGAN TERBALIK", q:"5 orang 10 hari. 10 orang berapa hari?", o:["20","10","5","2"], r:"5 orang 10 hari → total pekerjaan 50. 10 orang → 50/10=5 hari."},
-  {category:"ASN", hook1:"DISKON BERTAHAP", hook2:"BANYAK ORANG SALAH HITUNG", q:"Diskon 50% lalu 50% lagi. Total sisa?", o:["Gratis","25%","50%","75%"], r:"Harga ×0,5 ×0,5 = 0,25 → sisa 25% dari harga awal."},
-  {category:"ASN", hook1:"2/3 DARI 3/4", hook2:"HITUNG LANGKAH DEMI LANGKAH", q:"2/3 dari 3/4 dari 120?", o:["40","60","80","90"], r:"3/4 ×120=90 → 2/3 ×90=60."}
+/* SNBT 15 */
+{category:"SNBT", hook1:"LOGIKA DASAR MENIPU", hook2:"PERHATIKAN SEBAGIAN", q:"Jika semua A adalah B dan semua B adalah C, maka?", o:["A adalah C","C adalah A","Sebagian","Tidak ada"], r:"Semua A ke B dan semua B ke C → semua A pasti ke C. Opsi lain salah karena tidak mengikuti rantai logika penuh."},
+{category:"SNBT", hook1:"TRANSITIF ITU KUNCI", hook2:"SIAPA PALING TINGGI?", q:"Anton lebih tinggi dari Budi. Budi lebih tinggi dari Caca. Siapa paling tinggi?", o:["Anton","Budi","Caca","Tidak tahu"], r:"Relasi transitif: Anton > Budi > Caca → Anton tertinggi."},
+{category:"SNBT", hook1:"HITUNG LAJU KERJA", hook2:"JANGAN HANYA TEBARANGKAN", q:"Pekerjaan selesai oleh A 4 hari dan B 6 hari. Jika bekerja bersama?", o:["5 hari","4 hari","2,4 hari","10 hari"], r:"Hitung laju kerja: A=1/4, B=1/6 per hari → total=5/12 per hari → 12/5=2,4 hari."},
+{category:"SNBT", hook1:"JANGAN TERLALU UMUM", hook2:"SEBAGIAN ITU PENTING", q:"Sebagian ASN adalah dosen. Kesimpulan yang benar?", o:["Semua ASN dosen","Sebagian dosen ASN","Tidak ada dosen ASN","Semua dosen ASN"], r:"Sebagian hanya menjamin ada irisan, tidak boleh dinaikkan menjadi semua atau dihilangkan menjadi tidak ada."},
+{category:"SNBT", hook1:"JANGAN SALAH MODULO", hook2:"HARI BERAPA?", q:"Jika hari ini Rabu, 100 hari lagi hari apa?", o:["Kamis","Jumat","Sabtu","Minggu"], r:"Gunakan modulo 7: 100 mod 7 = 2 → Rabu + 2 hari = Jumat."},
+{category:"SNBT", hook1:"PREMIS SALAH = KESIMPULAN SALAH", hook2:"BERPIKIR TEPAT", q:"Semua burung bisa terbang. Penguin burung. Benarkah?", o:["Benar","Salah","Sebagian","Tidak tahu"], r:"Premis universal salah (penguin tidak terbang) → kesimpulan 'semua' salah."},
+{category:"SNBT", hook1:"JANGAN BALIKKAN IMPLIKASI", hook2:"PASTIKAN A BENAR", q:"Jika p maka q. q terjadi. Kesimpulan?", o:["p terjadi","p tidak terjadi","tidak dapat ditentukan","p pasti"], r:"Implikasi tidak bisa dibalik: q terjadi tidak menjamin p terjadi."},
+{category:"SNBT", hook1:"SEBAGIAN BUKAN SEMUA", hook2:"LOGIKA SELEKTIF", q:"Tidak semua siswa rajin. Sebagian siswa pintar. Apa kesimpulan?", o:["Semua pintar","Sebagian rajin","Sebagian pintar","Tidak ada"], r:"Hanya sebagian yang diketahui, tidak dapat disimpulkan semua atau tidak ada."},
+{category:"SNBT", hook1:"HITUNG RELASI CEPAT", hook2:"JANGAN TERBALIK", q:"Jika A lebih cepat dari B dan B dari C. Siapa tercepat?", o:["A","B","C","Tidak tahu"], r:"Relasi transitif: A > B > C → A tercepat."},
+{category:"SNBT", hook1:"DOKTER SEBAGIAN ASN", hook2:"JANGAN SAMAKAN SEMUA", q:"Sebagian dokter ASN. Semua ASN pegawai negara. Apa kesimpulan?", o:["Semua dokter ASN","Sebagian dokter pegawai","Tidak ada","Semua ASN dokter"], r:"Sebagian tidak sama dengan semua. Tidak bisa mengklaim semua dokter ASN."},
+{category:"SNBT", hook1:"HUJAN DAN JALAN BASAH", hook2:"SEBAB TIDAK SELALU AKIBAT", q:"Jika hujan maka jalan basah. Jalan basah. Hujan?", o:["Hujan","Tidak hujan","Mungkin hujan","Pasti hujan"], r:"Akibat tidak menjamin sebab: jalan basah bisa karena lain, jadi tidak pasti hujan."},
+{category:"SNBT", hook1:"TIDAK ADA MAHASISWA MALAS", hook2:"PERNYATAAN KONTRADIKTIF", q:"Tidak ada mahasiswa malas. Sebagian mahasiswa suka tidur. Apa kesimpulan?", o:["Semua rajin","Sebagian malas","Kontradiksi","Tidak tahu"], r:"Tidur bukan sama dengan malas, tidak ada kontradiksi nyata."},
+{category:"SNBT", hook1:"ANALISIS URUTAN", hook2:"JANGAN TERBALIKKAN", q:"Jika A > B dan B > C. Siapa di tengah?", o:["A","B","C","Tidak tahu"], r:"B ada di tengah karena A > B > C."},
+{category:"SNBT", hook1:"LOGIKA KOMBINASI", hook2:"PERHATIKAN SETIAP STEP", q:"Jika aturan ditaati maka disiplin meningkat. Disiplin meningkat. Aturan ditaati?", o:["Ya","Tidak","Mungkin","Tidak pasti"], r:"Akibat tidak menjamin sebab. Disiplin meningkat tidak memastikan aturan ditaati."},
+{category:"SNBT", hook1:"SELEKSI DATA", hook2:"JANGAN ASUMSI", q:"Sebagian peserta lulus. Tidak semua ASN. Siapa pasti lulus?", o:["Sebagian ASN lulus","Tidak ada ASN lulus","Tidak pasti","Semua lulus"], r:"Dua sebagian tidak bertemu → tidak bisa menyimpulkan pasti siapa lulus."},
+
+/* ASN 15 */
+{category:"ASN", hook1:"LEBIH ORANG → CEPAT SELESAI", hook2:"PERBANDINGAN TERBALIK", q:"5 orang 10 hari. 10 orang berapa hari?", o:["20","10","5","2"], r:"5 orang 10 hari → total pekerjaan 50. 10 orang → 50/10=5 hari."},
+{category:"ASN", hook1:"DISKON BERTAHAP", hook2:"HITUNG DENGAN BENAR", q:"Diskon 50% lalu 50% lagi. Total sisa?", o:["Gratis","25%","50%","75%"], r:"Harga ×0,5 ×0,5 = 0,25 → sisa 25% dari harga awal."},
+{category:"ASN", hook1:"KERJAKAN BERTAHAP", hook2:"MODULO DAN PERBANDINGAN", q:"2/3 dari 3/4 dari 120?", o:["40","60","80","90"], r:"3/4 ×120=90 → 2/3 ×90=60."},
+{category:"ASN", hook1:"MESIN DAN PRODUK", hook2:"HITUNG LANGSUNG", q:"3 mesin 3 barang 3 menit. 6 mesin 6 barang?", o:["3","6","9","12"], r:"Perbandingan langsung: 3×3=9, 6×6? Perlu dihitung proporsional → 12."},
+{category:"ASN", hook1:"HARGA NAIK TURUN", hook2:"JANGAN ASUMSI SAMAKAN", q:"Harga naik 20% lalu turun 20%. Harga akhir?", o:["Tetap","Turun","Naik","Sama"], r:"Naik 20% → 120, turun 20% dari 120 = 96 → tidak sama dengan harga awal 100."},
+{category:"ASN", hook1:"RATA-RATA BERUBAH", hook2:"CERMATI SELISIH", q:"Rata-rata 5 orang 80. Satu keluar, rata-rata 75?", o:["100","95","90","85"], r:"Total awal 5×80=400, orang keluar → total 4×75=300 → selisih 100 → orang keluar 100."},
+{category:"ASN", hook1:"PERBANDINGAN RASIO", hook2:"HITUNG PROPORSIONAL", q:"Perbandingan A:B = 2:3. Total 50. A?", o:["20","25","30","35"], r:"2:3 → 5 bagian = 50 → 1 bagian =10 → A=2×10=20."},
+{category:"ASN", hook1:"KECEPATAN ORANG", hook2:"JANGAN SALAH BASIS", q:"8 orang selesai 6 hari. 12 orang berapa hari?", o:["4","6","8","9"], r:"Perbandingan terbalik: 8 orang 6 hari = 48 orang-hari → 12 orang → 48/12=4 hari."},
+{category:"ASN", hook1:"ELIMINASI CEPAT", hook2:"JANGAN LAMBAT HITUNG", q:"x+y=10 dan x−y=2. x?", o:["4","5","6","8"], r:"x+y=10, x−y=2 → x=6, y=4."},
+{category:"ASN", hook1:"MASALAH PROPORSIONAL", hook2:"HITUNG SETIAP STEP", q:"3 orang bisa cat 12 m2 4 jam. 6 orang?", o:["6 jam","2 jam","4 jam","8 jam"], r:"Jumlah pekerja meningkat → waktu menurun proporsional."},
+{category:"ASN", hook1:"KECEPATAN MESIN", hook2:"JANGAN SALAH KALKULASI", q:"4 mesin 8 barang 4 menit. 8 mesin?", o:["2","4","8","16"], r:"Kerja mesin linear, total output proporsional → 8 mesin 4 menit."},
+{category:"ASN", hook1:"DISKON KOMBINASI", hook2:"HITUNG DENGAN RAPI", q:"Diskon 30% lalu 20%. Sisa harga?", o:["56%","50%","60%","54%"], r:"Harga ×0,7 ×0,8 = 0,56 → sisa 56% dari harga awal."},
+{category:"ASN", hook1:"RATA-RATA BERUBAH", hook2:"PASTIKAN PERBANDINGAN", q:"4 orang rata-rata 80, satu keluar 70, rata-rata baru?", o:["77,5","75","80","72,5"], r:"Total awal 4×80=320, keluarnya 70 → total 250, rata-rata baru = 250/3=83,33."},
+{category:"ASN", hook1:"PERSENTASE MAKSIMAL", hook2:"JANGAN LEBIH", q:"Persentase siswa lulus 70%, 10 siswa tambahan?", o:["70%","75%","80%","65%"], r:"Jumlah lulus bertambah 10, total siswa bertambah → persentase dihitung proporsional."}
+
 ]);
 
 let ITEMS = [...ALL_ITEMS];
@@ -170,7 +194,6 @@ const optEl=document.getElementById("opt");
 const wrong=document.getElementById("wrong");
 const rat=document.getElementById("rat");
 const audioCue=document.getElementById("audioCue");
-
 let beat;
 
 document.getElementById("categorySelector").addEventListener("change",(e)=>{
@@ -217,10 +240,14 @@ function loadItem(){
     });
     playWords([...rat.children]);
   },6500);
-  setTimeout(()=>{idx=(idx+1)%ITEMS.length; loadItem();},9500);
+  setTimeout(()=>{
+    idx=(idx+1)%ITEMS.length;
+    loadItem();
+  },10500); // 2 sec pause after rationale
 }
 
 loadItem();
 </script>
+
 </body>
 </html>
