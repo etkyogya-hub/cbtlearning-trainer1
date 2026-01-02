@@ -156,41 +156,8 @@ body{
 </div>
 
 <script>
-/* ================= ITEMS ================= */
-const ITEMS=[
-{
- q:"A 4 hari, B 6 hari. Bersama?",
- o:["5","4","2.4","10"],
- r:"Yang dihitung laju kerja"
-},
-{
- q:"Semua ASN pegawai negara. Sebagian dosen.",
- o:["Semua ASN dosen","Sebagian ASN dosen","Tidak ada","Pasti"],
- r:"Logika tidak boleh lompat"
-},
-{
- q:"5 orang 10 hari. 10 orang?",
- o:["20","10","5","2"],
- r:"Orang dan waktu terbalik"
-}
-  {
- q:"Jika semua A adalah B dan semua B adalah C, maka?",
- o:["A adalah C","C adalah A","Sebagian","Tidak ada"],
- r:"Rantai penuh memastikan hubungan"
-},
-
-{
- q:"Diskon 50% lalu 50% lagi?",
- o:["Gratis","25%","50%","75%"],
- r:"Diskon bertingkat bukan penjumlahan"
-},
-
-{
- q:"A 4 hari, B 6 hari. Bersama?",
- o:["5","4","2.4","10"],
- r:"Yang dihitung laju kerja"
-}
-  const ITEMS = [
+/* ================= ITEMS (30 SOAL) ================= */
+const ITEMS = [
 
 /* ===== SNBT LOGIKA ===== */
 {
@@ -218,33 +185,8 @@ const ITEMS=[
  o:["Benar","Salah","Sebagian","Tidak tahu"],
  r:"Premis salah merusak kesimpulan"
 },
-{
- q:"Jika p maka q. p salah.",
- o:["q salah","q benar","q pasti","q tidak pasti"],
- r:"Implikasi tidak bisa dibalik"
-},
-{
- q:"Sebagian dokter ASN. Semua ASN pegawai negara.",
- o:["Semua dokter ASN","Sebagian dokter pegawai","Tidak ada","Semua ASN dokter"],
- r:"Sebagian tidak menjadi semua"
-},
-{
- q:"Jika hujan maka jalan basah. Jalan basah.",
- o:["Hujan","Tidak hujan","Mungkin hujan","Pasti hujan"],
- r:"Akibat tidak memastikan sebab"
-},
-{
- q:"Tidak ada mahasiswa malas. Sebagian mahasiswa suka tidur.",
- o:["Semua rajin","Sebagian malas","Kontradiksi","Tidak tahu"],
- r:"Tidur bukan malas"
-},
-{
- q:"Jika A lebih cepat dari B dan B dari C.",
- o:["A tercepat","C tercepat","B tercepat","Tidak tahu"],
- r:"Relasi transitif"
-},
 
-/* ===== SNBT KUANTITATIF TRAP ===== */
+/* ===== SNBT KUANTITATIF ===== */
 {
  q:"A 4 hari, B 6 hari. Bersama?",
  o:["5","4","2.4","10"],
@@ -258,49 +200,24 @@ const ITEMS=[
 {
  q:"Diskon 50% lalu 50% lagi?",
  o:["Gratis","25%","50%","75%"],
- r:"Diskon bertingkat bukan jumlah"
+ r:"Diskon bertingkat bukan penjumlahan"
 },
 {
  q:"2/3 dari 3/4 dari 120?",
  o:["40","60","80","90"],
  r:"Kerjakan bertahap"
 },
-{
- q:"3 mesin 3 barang 3 menit. 6 mesin 6 barang?",
- o:["3","6","9","12"],
- r:"Perbandingan langsung"
-},
 
-/* ===== ASN LOGIKA TIU ===== */
-{
- q:"Semua PNS adalah ASN. Sebagian ASN dosen.",
- o:["Semua dosen ASN","Sebagian PNS dosen","Tidak pasti","Semua ASN dosen"],
- r:"Sebagian tidak mengikat"
-},
-{
- q:"Tidak semua pegawai rajin. Andi pegawai.",
- o:["Andi rajin","Andi tidak rajin","Tidak pasti","Pasti rajin"],
- r:"Tidak semua ≠ sebagian"
-},
-{
- q:"Jika aturan ditaati maka disiplin meningkat. Disiplin meningkat.",
- o:["Aturan ditaati","Tidak ditaati","Mungkin ditaati","Pasti ditaati"],
- r:"Akibat tidak menjamin sebab"
-},
-{
- q:"Sebagian peserta lulus. Tidak semua peserta ASN.",
- o:["Sebagian ASN lulus","Tidak ada ASN lulus","Tidak pasti","Semua lulus"],
- r:"Dua sebagian tidak bertemu"
-},
+/* ===== ASN LOGIKA ===== */
 {
  q:"Semua ASN wajib netral. Budi tidak netral.",
  o:["Budi ASN","Budi bukan ASN","Netral","Tidak tahu"],
  r:"Kontrapositif berlaku"
 },
 {
- q:"Jika A maka B. Jika B maka C. A salah.",
- o:["C salah","C benar","C tidak pasti","B salah"],
- r:"Implikasi tidak berantai mundur"
+ q:"Jika aturan ditaati maka disiplin meningkat. Disiplin meningkat.",
+ o:["Aturan ditaati","Tidak ditaati","Mungkin ditaati","Pasti ditaati"],
+ r:"Akibat tidak menjamin sebab"
 },
 {
  q:"Tidak ada pegawai terlambat. Susi pegawai.",
@@ -315,19 +232,14 @@ const ITEMS=[
  r:"Perbandingan terbalik"
 },
 {
- q:"Rata-rata 5 orang 80. Satu keluar, rata-rata 75.",
+ q:"Rata-rata 5 orang 80. Satu keluar jadi 75.",
  o:["100","95","90","85"],
- r:"Total dulu baru selisih"
-},
-{
- q:"Perbandingan A:B = 2:3. Total 50.",
- o:["20","25","30","35"],
- r:"Rasio dikalikan"
+ r:"Total dulu baru dikurangi"
 },
 {
  q:"Harga naik 20% lalu turun 20%.",
  o:["Tetap","Turun","Naik","Sama"],
- r:"Naik dan turun beda basis"
+ r:"Basis persentase berbeda"
 },
 {
  q:"x+y=10 dan x−y=2.",
@@ -337,24 +249,21 @@ const ITEMS=[
 
 ];
 
-];
-
-/* SHUFFLE */
+/* ================= SHUFFLE ================= */
 for(let i=ITEMS.length-1;i>0;i--){
   const j=Math.floor(Math.random()*(i+1));
   [ITEMS[i],ITEMS[j]]=[ITEMS[j],ITEMS[i]];
 }
 
+/* ================= ENGINE ================= */
 let idx=0;
 const title=document.getElementById("title");
 const qEl=document.getElementById("q");
 const optEl=document.getElementById("opt");
 const wrong=document.getElementById("wrong");
 const rat=document.getElementById("rat");
-
 let beat;
 
-/* WORD BEAT */
 function playWords(words){
   let i=0;
   clearInterval(beat);
@@ -363,16 +272,13 @@ function playWords(words){
     if(i<words.length){
       words[i].classList.add("on");
       i++;
-    }else{
-      clearInterval(beat);
-    }
+    } else clearInterval(beat);
   },260);
 }
 
 function loadItem(){
   const it=ITEMS[idx];
 
-  /* RESET */
   title.classList.add("shock");
   wrong.classList.remove("show");
   rat.classList.remove("show");
@@ -382,33 +288,25 @@ function loadItem(){
   optEl.innerHTML=it.o.map(x=>`<div>${x}</div>`).join("");
   optEl.classList.add("pressure");
 
-  /* STOP TITLE SHOCK AFTER 2s (FOR CUT) */
-  setTimeout(()=>{
-    title.classList.remove("shock");
-  },2000);
+  setTimeout(()=>title.classList.remove("shock"),2000);
 
-  /* WRONG */
   setTimeout(()=>{
     optEl.classList.remove("pressure");
     wrong.classList.add("show");
   },3800);
 
-  /* RATIONALE */
   setTimeout(()=>{
     wrong.classList.remove("show");
     rat.classList.add("show");
-
     it.r.split(" ").forEach(w=>{
       const s=document.createElement("span");
       s.className="word";
       s.textContent=w+" ";
       rat.appendChild(s);
     });
-
     playWords([...rat.children]);
   },5200);
 
-  /* NEXT ITEM */
   setTimeout(()=>{
     idx=(idx+1)%ITEMS.length;
     loadItem();
@@ -417,6 +315,7 @@ function loadItem(){
 
 loadItem();
 </script>
+
 
 </body>
 </html>
