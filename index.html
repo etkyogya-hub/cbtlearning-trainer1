@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shock Hook Trainer</title>
+<title>Trainer Mode – Clean Rationale</title>
 <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
 
 <style>
@@ -28,12 +28,12 @@ body{
 /* TITLE */
 .title{
   font-family:'Anton';
-  font-size:38px;
+  font-size:36px;
   text-align:center;
-  margin-bottom:12px;
+  margin-bottom:14px;
 }
 .shock{
-  animation:shake .12s infinite, flash .18s infinite;
+  animation:shake .15s infinite, flash .25s infinite;
 }
 @keyframes shake{
   0%{transform:translate(0)}
@@ -43,14 +43,17 @@ body{
 }
 @keyframes flash{
   0%{color:#fff}
-  25%{color:#ff2d2d}
-  50%{color:#00ffe5}
-  75%{color:#ffe600}
+  33%{color:#ff3b3b}
+  66%{color:#00ffe5}
   100%{color:#fff}
 }
 
 /* QUESTION */
-.question{font-size:15px;line-height:1.45;margin-bottom:14px}
+.question{
+  font-size:15px;
+  line-height:1.5;
+  margin-bottom:14px;
+}
 
 /* OPTIONS */
 .options div{
@@ -59,7 +62,9 @@ body{
   margin-bottom:8px;
   opacity:.85;
 }
-.pressure{animation:shakeX .22s infinite}
+.pressure{
+  animation:shakeX .25s infinite;
+}
 @keyframes shakeX{
   0%{transform:translateX(0)}
   25%{transform:translateX(-4px)}
@@ -76,7 +81,7 @@ body{
   justify-content:center;
   font-family:'Anton';
   font-size:40px;
-  color:#ff2d2d;
+  color:#ff3b3b;
   opacity:0;
 }
 .wrong.show{opacity:1}
@@ -84,41 +89,25 @@ body{
 /* RATIONALE */
 .rationale{
   position:absolute;
-  top:55%;
+  top:56%;
   left:18px;
   right:18px;
-  font-family:'Anton';
-  font-size:28px;
+  font-size:18px;
+  line-height:1.55;
   text-align:center;
   opacity:0;
 }
-.rationale.show{opacity:1}
-
-.word{
-  display:inline-block;
-  opacity:0;
-}
-.word.on{
+.rationale.show{
   opacity:1;
-  animation:wave 1.2s ease-in-out infinite, flashWord .3s steps(1,end);
-}
-@keyframes wave{
-  0%{transform:translateY(0)}
-  50%{transform:translateY(-6px)}
-  100%{transform:translateY(0)}
-}
-@keyframes flashWord{
-  0%{filter:brightness(2)}
-  100%{filter:brightness(1)}
 }
 </style>
 </head>
 
 <body>
 <div class="frame">
-  <div class="title" id="title"></div>
+  <div class="title shock" id="title"></div>
   <div class="question" id="q"></div>
-  <div class="options" id="opt"></div>
+  <div class="options pressure" id="opt"></div>
   <div class="wrong" id="wrong">SALAH</div>
   <div class="rationale" id="rat"></div>
 </div>
@@ -128,65 +117,42 @@ body{
 </audio>
 
 <script>
-/* ========= AI ITEMS ========= */
+/* ================= ITEMS ================= */
+/* RATIONALE DITULIS MANUAL, SPESIFIK KE SOAL */
 const ITEMS = shuffle([
 {
- trap:"implikasi terbalik",
- q:"Jika p maka q. q terjadi. Kesimpulan?",
- o:["p terjadi","p tidak terjadi","p mungkin","p pasti"],
- rationale:(c)=> c===2
-  ?"Otakmu ingin membalik logika, padahal akibat tidak menjamin sebab."
-  :"Pilihan ini muncul dari refleks logika terbalik."
+ hook1:"SOAL INI MENIPU OTOMATIS",
+ hook2:"LOGIKA KAMU KEPIKIRAN INI",
+ q:"Jika p maka q. q terjadi. Kesimpulan yang tepat?",
+ o:["p terjadi","p tidak terjadi","tidak dapat ditentukan","p pasti"],
+ r:"Dalam logika implikasi, akibat (q) yang terjadi tidak bisa digunakan untuk memastikan sebab (p). Karena itu, tidak ada kepastian apakah p terjadi atau tidak."
 },
 {
- trap:"sebagian ≠ semua",
- q:"Sebagian ASN dosen. Kesimpulan benar?",
- o:["Semua ASN dosen","Sebagian dosen ASN","Tidak ada","Semua dosen ASN"],
- rationale:(c)=> c===1
-  ?"Kata sebagian tidak pernah boleh ditarik jadi semua."
-  :"Ini jebakan karena terbiasa menyamaratakan."
+ hook1:"KATA SEBAGIAN BIKIN JEBLOK",
+ hook2:"INI KESALAHAN UMUM",
+ q:"Sebagian ASN adalah dosen. Kesimpulan yang benar?",
+ o:["Semua ASN dosen","Sebagian dosen ASN","Tidak ada dosen ASN","Semua dosen ASN"],
+ r:"Pernyataan sebagian hanya menjamin ada irisan. Tidak pernah boleh dinaikkan menjadi semua atau dihilangkan menjadi tidak ada."
 },
 {
- trap:"laju kerja",
- q:"A 4 hari, B 6 hari. Bersama?",
- o:["5","4","2.4","10"],
- rationale:(c)=> c===2
-  ?"Yang dijumlahkan adalah laju, bukan harinya."
-  :"Ini refleks salah karena menjumlah waktu."
+ hook1:"INI BUKAN TAMBAH HARI",
+ hook2:"YANG DIHITUNG LAJU",
+ q:"Pekerjaan selesai oleh A 4 hari dan B 6 hari. Jika bersama?",
+ o:["5 hari","4 hari","2,4 hari","10 hari"],
+ r:"Yang dijumlahkan adalah laju kerja per hari. A = 1/4, B = 1/6, total = 5/12 pekerjaan per hari, sehingga waktu = 12/5 = 2,4 hari."
 }
 ]);
 
-let used = 0;
+let idx = 0;
+const title = document.getElementById("title");
+const qEl = document.getElementById("q");
+const optEl = document.getElementById("opt");
+const wrong = document.getElementById("wrong");
+const rat = document.getElementById("rat");
+const cue = document.getElementById("cue");
+cue.volume = 0.25;
 
-/* ========= HOOK A/B ========= */
-function genHook(trap,phase){
-  const map={
-    "implikasi terbalik":[
-      ["OTAK SERING KESELIP","KAMU BARUSAN KEPIKIRAN INI"],
-      ["LOGIKA DIBALIK","INI KESALAHAN UMUM"]
-    ],
-    "sebagian ≠ semua":[
-      ["KATA SEBAGIAN MENIPU","INI JEBATAN PIKIRAN"],
-      ["JANGAN DIGENERAL","OTAK SUKA NYEPLONG"]
-    ],
-    "laju kerja":[
-      ["INI BUKAN TAMBAH HARI","JEBATAN LAJU"],
-      ["SOAL KELIHATAN MUDAH","OTAK SERING SALAH"]
-    ]
-  };
-  return map[trap][phase][Math.floor(Math.random()*2)];
-}
-
-/* ========= DOM ========= */
-const title=document.getElementById("title");
-const qEl=document.getElementById("q");
-const optEl=document.getElementById("opt");
-const wrong=document.getElementById("wrong");
-const rat=document.getElementById("rat");
-const cue=document.getElementById("cue");
-cue.volume=.25;
-
-/* ========= UTILS ========= */
+/* SHUFFLE */
 function shuffle(a){
   for(let i=a.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
@@ -194,30 +160,18 @@ function shuffle(a){
   }
   return a;
 }
-function playWords(words){
-  let i=0;
-  const beat=setInterval(()=>{
-    if(i>0) words[i-1].classList.remove("on");
-    if(i<words.length){
-      words[i].classList.add("on");
-      i++;
-    }else clearInterval(beat);
-  },260);
-}
 
-/* ========= FLOW ========= */
 function loadItem(){
-  const it=ITEMS[used++ % ITEMS.length];
+  const it = ITEMS[idx];
 
-  title.textContent=genHook(it.trap,0);
+  title.textContent = it.hook1;
   title.classList.add("shock");
-
-  qEl.textContent=it.q;
-  optEl.innerHTML=it.o.map(x=>`<div>${x}</div>`).join("");
+  qEl.textContent = it.q;
+  optEl.innerHTML = it.o.map(x=>`<div>${x}</div>`).join("");
   optEl.classList.add("pressure");
 
   setTimeout(()=>{
-    title.textContent=genHook(it.trap,1);
+    title.textContent = it.hook2;
   },1200);
 
   setTimeout(()=>{
@@ -228,22 +182,17 @@ function loadItem(){
 
   setTimeout(()=>{
     wrong.classList.remove("show");
-    rat.innerHTML="";
+    rat.textContent = it.r;
     rat.classList.add("show");
-    it.rationale(2).split(" ").forEach(w=>{
-      const s=document.createElement("span");
-      s.className="word";
-      s.textContent=w+" ";
-      rat.appendChild(s);
-    });
-    playWords([...rat.children]);
-  },4400);
+  },4600);
 
   setTimeout(()=>{
-    cue.currentTime=0; cue.play().catch(()=>{});
     rat.classList.remove("show");
+    cue.currentTime = 0;
+    cue.play().catch(()=>{});
+    idx = (idx + 1) % ITEMS.length;
     loadItem();
-  },7200);
+  },8000);
 }
 
 loadItem();
