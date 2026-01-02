@@ -130,24 +130,38 @@ body{
 <audio id="audioCue" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
 
 <script>
-/* ================= ITEMS ================= */
-const ITEMS = shuffle([
-  { hook1:"LOGIKA DASAR TAPI MENIPU", hook2:"PERHATIKAN SEBAGIAN", q:"Jika semua A adalah B dan semua B adalah C, maka?", o:["A adalah C","C adalah A","Sebagian","Tidak ada"], r:"Semua A ke B dan semua B ke C → semua A pasti ke C. Opsi lain salah karena tidak mengikuti rantai logika penuh."},
-  { hook1:"JANGAN TERLALU GENERAL", hook2:"SEBAGIAN ≠ SEMUA", q:"Tidak semua siswa rajin. Sebagian siswa pintar.", o:["Semua pintar","Sebagian rajin","Sebagian pintar","Tidak ada"], r:"Hanya sebagian yang diketahui pintar; tidak bisa disimpulkan semua atau tidak ada."},
-  { hook1:"PERHITUNGAN HARI ITU PENTING", hook2:"YANG DIHITUNG LAJU KERJA", q:"Pekerjaan selesai oleh A 4 hari dan B 6 hari. Jika bekerja bersama?", o:["5 hari","4 hari","2,4 hari","10 hari"], r:"Hitung laju kerja: A=1/4, B=1/6 per hari → total=5/12 per hari → 12/5=2,4 hari."},
-  { hook1:"TRANSITIF ITU KUNCI", hook2:"SIAPA PALING TINGGI?", q:"Anton lebih tinggi dari Budi. Budi lebih tinggi dari Caca. Siapa paling tinggi?", o:["Anton","Budi","Caca","Tidak tahu"], r:"Relasi transitif: Anton > Budi > Caca → Anton tertinggi."},
-  { hook1:"JANGAN TERBINGUNG PREMIS SALAH", hook2:"PENGUJIAN PENGANTAR", q:"Semua burung bisa terbang. Penguin burung. Benar atau salah?", o:["Benar","Salah","Sebagian","Tidak tahu"], r:"Premis salah karena penguin burung tapi tidak bisa terbang → jawaban Salah."},
-  { hook1:"HITUNG LAJU KERJA", hook2:"JANGAN HANYA TEBARANGKAN", q:"A 4 hari, B 6 hari. Bersama?", o:["5","4","2.4","10"], r:"A=1/4, B=1/6 → total 5/12 per hari → 12/5=2,4 hari."},
-  { hook1:"LEBIH ORANG → CEPAT SELESAI", hook2:"PERBANDINGAN TERBALIK", q:"5 orang 10 hari. 10 orang berapa hari?", o:["20","10","5","2"], r:"5 orang 10 hari → total pekerjaan 50. 10 orang → 50/10=5 hari."},
-  { hook1:"DISKON BERTAHAP", hook2:"BANYAK ORANG SALAH HITUNG", q:"Diskon 50% lalu 50% lagi. Total sisa?", o:["Gratis","25%","50%","75%"], r:"Harga ×0,5 ×0,5 = 0,25 → sisa 25% dari harga awal."},
-  { hook1:"KERJAKAN LANGKAH DEMI LANGKAH", hook2:"HATI-HATI FRAKSI", q:"2/3 dari 3/4 dari 120?", o:["40","60","80","90"], r:"3/4 ×120=90 → 2/3 ×90=60."},
-  { hook1:"MESIN BANYAK, WAKTU CEPAT", hook2:"HITUNG PROPORSIONAL", q:"3 mesin 3 barang 3 menit. 6 mesin 6 barang?", o:["3","6","9","12"], r:"Setiap mesin 1 barang 1 menit. 6 mesin → 6 barang tetap 3 menit."}
-  // ... rest of 30 items go here
-]);
-
-/* ================= SHUFFLE UTILITY ================= */
 function shuffle(array){let currentIndex=array.length,randomIndex;while(currentIndex!=0){randomIndex=Math.floor(Math.random()*currentIndex);currentIndex--;[array[currentIndex],array[randomIndex]]=[array[randomIndex],array[currentIndex]];}return array;}
 
+/* ================= 30 ITEMS ================= */
+const ITEMS = shuffle([
+{ hook1:"LOGIKA DASAR TAPI MENIPU", hook2:"PERHATIKAN SEBAGIAN", q:"Jika semua A adalah B dan semua B adalah C, maka?", o:["A adalah C","C adalah A","Sebagian","Tidak ada"], r:"Semua A ke B dan semua B ke C → semua A pasti ke C. Opsi lain salah karena tidak mengikuti rantai logika penuh."},
+{ hook1:"JANGAN TERLALU GENERAL", hook2:"SEBAGIAN ≠ SEMUA", q:"Tidak semua siswa rajin. Sebagian siswa pintar.", o:["Semua pintar","Sebagian rajin","Sebagian pintar","Tidak ada"], r:"Hanya sebagian yang diketahui pintar; tidak bisa disimpulkan semua atau tidak ada."},
+{ hook1:"PERHITUNGAN HARI ITU PENTING", hook2:"YANG DIHITUNG LAJU KERJA", q:"Pekerjaan selesai oleh A 4 hari dan B 6 hari. Jika bekerja bersama?", o:["5 hari","4 hari","2,4 hari","10 hari"], r:"Hitung laju kerja: A=1/4, B=1/6 per hari → total=5/12 per hari → 12/5=2,4 hari."},
+{ hook1:"TRANSITIF ITU KUNCI", hook2:"SIAPA PALING TINGGI?", q:"Anton lebih tinggi dari Budi. Budi lebih tinggi dari Caca. Siapa paling tinggi?", o:["Anton","Budi","Caca","Tidak tahu"], r:"Relasi transitif: Anton > Budi > Caca → Anton tertinggi."},
+{ hook1:"JANGAN TERBINGUNG PREMIS SALAH", hook2:"PENGUJIAN PENGANTAR", q:"Semua burung bisa terbang. Penguin burung. Benar atau salah?", o:["Benar","Salah","Sebagian","Tidak tahu"], r:"Premis salah karena penguin burung tapi tidak bisa terbang → jawaban Salah."},
+{ hook1:"HITUNG LAJU KERJA", hook2:"JANGAN HANYA TEBARANGKAN", q:"A 4 hari, B 6 hari. Bersama?", o:["5","4","2.4","10"], r:"A=1/4, B=1/6 → total 5/12 per hari → 12/5=2,4 hari."},
+{ hook1:"LEBIH ORANG → CEPAT SELESAI", hook2:"PERBANDINGAN TERBALIK", q:"5 orang 10 hari. 10 orang berapa hari?", o:["20","10","5","2"], r:"5 orang 10 hari → total pekerjaan 50. 10 orang → 50/10=5 hari."},
+{ hook1:"DISKON BERTAHAP", hook2:"BANYAK ORANG SALAH HITUNG", q:"Diskon 50% lalu 50% lagi. Total sisa?", o:["Gratis","25%","50%","75%"], r:"Harga ×0,5 ×0,5 = 0,25 → sisa 25% dari harga awal."},
+{ hook1:"KERJAKAN LANGKAH DEMI LANGKAH", hook2:"HATI-HATI FRAKSI", q:"2/3 dari 3/4 dari 120?", o:["40","60","80","90"], r:"3/4 ×120=90 → 2/3 ×90=60."},
+{ hook1:"MESIN BANYAK, WAKTU CEPAT", hook2:"HITUNG PROPORSIONAL", q:"3 mesin 3 barang 3 menit. 6 mesin 6 barang?", o:["3","6","9","12"], r:"Setiap mesin 1 barang 1 menit. 6 mesin → 6 barang tetap 3 menit."},
+{ hook1:"SEBAGIAN TIDAK MENGIKAT", hook2:"JANGAN TERLALU GENERAL", q:"Semua PNS adalah ASN. Sebagian ASN dosen. Kesimpulan?", o:["Semua dosen ASN","Sebagian PNS dosen","Tidak pasti","Semua ASN dosen"], r:"Sebagian ASN dosen tidak mengikat semua → kesimpulan tidak pasti."},
+{ hook1:"ANDAI ANDI PEGAWAI", hook2:"TIDAK SEMUA = TIDAK PASTI", q:"Tidak semua pegawai rajin. Andi pegawai. Status Andi?", o:["Andi rajin","Andi tidak rajin","Tidak pasti","Pasti rajin"], r:"Tidak semua ≠ sebagian → status Andi tidak dapat dipastikan."},
+{ hook1:"AKIBAT ≠ SEBAB", hook2:"LOGIKA TIU", q:"Jika aturan ditaati maka disiplin meningkat. Disiplin meningkat. Sebab?", o:["Aturan ditaati","Tidak ditaati","Mungkin ditaati","Pasti ditaati"], r:"Disiplin meningkat tidak menjamin aturan ditaati → tidak bisa disimpulkan pasti."},
+{ hook1:"DUA SEBAGIAN TIDAK MENYIMPULKAN", hook2:"PERHATIKAN KONDISI", q:"Sebagian peserta lulus. Tidak semua peserta ASN.", o:["Sebagian ASN lulus","Tidak ada ASN lulus","Tidak pasti","Semua lulus"], r:"Dua sebagian tidak selalu bertemu → kesimpulan tidak pasti."},
+{ hook1:"NETRALITAS = PASTI", hook2:"JIKA MELANGGAR → BUKTI", q:"Semua ASN wajib netral. Budi tidak netral. Status Budi?", o:["Budi ASN","Budi bukan ASN","Netral","Tidak tahu"], r:"Jika semua ASN netral dan Budi tidak netral, Budi bukan ASN."},
+{ hook1:"ORANG BANYAK → CEPAT", hook2:"PERBANDINGAN TERBALIK", q:"8 orang selesai 6 hari. 12 orang?", o:["4","6","8","9"], r:"8×6=48 pekerjaan. 12 orang → 48/12=4 hari."},
+{ hook1:"HITUNG TOTAL SEBELUM SELISIH", hook2:"RATA-RATA BERUBAH", q:"Rata-rata 5 orang 80. Satu keluar, rata-rata 75. Nilai yang keluar?", o:["100","95","90","85"], r:"Total awal=400, sisa=4×75=300 → nilai yang keluar=100."},
+{ hook1:"RATIO = PROPORSIONAL", hook2:"BAGI TOTAL DENGAN PART", q:"Perbandingan A:B=2:3. Total 50. A berapa?", o:["20","25","30","35"], r:"Total 5 bagian → 50/5=10 per bagian → A=2×10=20."},
+{ hook1:"NAIK TURUN BUKAN SAMA", hook2:"HITUNG BASIS", q:"Harga naik 20% lalu turun 20%.", o:["Tetap","Turun","Naik","Sama"], r:"Naik 20% → 1,2X, turun 20% → 1,2×0,8=0,96X → turun 4%."},
+{ hook1:"SISTEM PERSAMAAN", hook2:"ELIMINASI CEPAT", q:"x+y=10 dan x−y=2. Nilai x?", o:["4","5","6","8"], r:"x=(10+2)/2=6."},
+{ hook1:"LOGIKA SUBTIL", hook2:"PERHATIKAN HUBUNGAN", q:"Jika p dan q benar, r salah. Apa yang bisa disimpulkan?", o:["p salah","q salah","r salah","Tidak pasti"], r:"Hanya r yang dipastikan salah, p dan q tetap benar."},
+{ hook1:"SEBAGIAN BISA MEMBUAT JEBLOK", hook2:"JANGAN TEBARANGKAN", q:"Sebagian mahasiswa senang matematika. Semua siswa suka logika. Kesimpulan?", o:["Semua mahasiswa suka matematika","Sebagian siswa suka matematika","Tidak ada","Tidak pasti"], r:"Hanya irisan diketahui → kesimpulan pasti tidak bisa diambil untuk semua."},
+{ hook1:"HATI-HATI PREMIS", hook2:"KESALAHAN UMUM", q:"Jika semua X > Y, dan Y > Z, maka X > Z?", o:["Benar","Salah","Sebagian","Tidak pasti"], r:"Transitif → X>Y>Z → X>Z. Opsi lain salah karena logika transitif."},
+{ hook1:"PENJUMLAHAN TIDAK LANGSUNG", hook2:"AGREGAT ITU PENTING", q:"3 orang 5 hari → 15 pekerjaan. 5 orang berapa hari?", o:["3","5","6","9"], r:"Total pekerjaan 15, 5 orang → 15/5=3 hari."},
+{ hook1:"DISKON BERTAHAP", hook2:"JANGAN SALAH HITUNG", q:"Barang diskon 20%, lalu 10%. Total sisa?", o:["72%","80%","70%","75%"], r:"Harga ×0,8 ×0,9=0,72 → sisa 72%."}
+]);
+
+/* ================= PLAYER ================= */
 let idx=0;
 const title=document.getElementById("title");
 const qEl=document.getElementById("q");
@@ -171,8 +185,6 @@ function playWords(words){
 
 function loadItem(){
   const it=ITEMS[idx];
-
-  /* RESET */
   title.textContent=it.hook1;
   title.classList.add("shock");
   wrong.classList.remove("show");
@@ -181,41 +193,20 @@ function loadItem(){
   qEl.textContent=it.q;
   optEl.innerHTML=it.o.map(x=>`<div>${x}</div>`).join("");
   optEl.classList.add("pressure");
-
-  /* PLAY AUDIO CUE */
   audioCue.currentTime=0; audioCue.play();
 
-  /* STOP TITLE SHOCK AFTER 2s */
   setTimeout(()=>{title.classList.remove("shock");},2000);
-
-  /* SECOND HOOK BEFORE WRONG */
   setTimeout(()=>{title.textContent=it.hook2; title.classList.add("shock");},3200);
   setTimeout(()=>{title.classList.remove("shock");},5000);
-
-  /* WRONG DISPLAY */
+  setTimeout(()=>{optEl.classList.remove("pressure"); wrong.classList.add("show");},5000);
   setTimeout(()=>{
-    optEl.classList.remove("pressure");
-    wrong.classList.add("show");
-  },5000);
-
-  /* RATIONALE */
-  setTimeout(()=>{
-    wrong.classList.remove("show");
-    rat.classList.add("show");
+    wrong.classList.remove("show"); rat.classList.add("show");
     it.r.split(" ").forEach(w=>{
-      const s=document.createElement("span");
-      s.className="word";
-      s.textContent=w+" ";
-      rat.appendChild(s);
+      const s=document.createElement("span"); s.className="word"; s.textContent=w+" "; rat.appendChild(s);
     });
     playWords([...rat.children]);
   },6500);
-
-  /* NEXT ITEM */
-  setTimeout(()=>{
-    idx=(idx+1)%ITEMS.length;
-    loadItem();
-  },9500);
+  setTimeout(()=>{idx=(idx+1)%ITEMS.length; loadItem();},9500);
 }
 
 loadItem();
